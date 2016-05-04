@@ -144,4 +144,11 @@ extern NSString *const kNewsFeedStoryBoardKey;
 // Reset to the default preferred orientations
 - (void)resetPreferredOrientationMask;
 
+/*
+ * Unless you need to show a custom modal (like in FPHS) you should not call this method
+ * Only call this method if the user has agreed through a prompt to log out and go to home screen already
+ * Otherwise, post a "APCUserForgotPasscodeNotification" notification and the alert will be shown for you
+ */
+- (void) resetAppAndProceedToSignIn;
+
 @end
