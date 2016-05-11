@@ -276,7 +276,6 @@
  */
 - (void) updateSegmentControlToGraphViewState
 {
-    [self.segmentedControl setSelectedSegmentIndex:APCGraphViewPeriodLastMonth];
     // Number of days will be negative, so check for greater than
     if (self.graphItem.graphData.numberOfDays > APCGraphView7DaysAgo)
     {
