@@ -67,6 +67,9 @@ typedef NS_ENUM(NSUInteger, APHTimelineGroups)
 //APCScoring Delegate
 @property (weak, nonatomic) id<APCScoringDelegate> scoringDelegate;
 
+//Exposed for APCGraphViewController
+@property (nonatomic) NSInteger numberOfDays;
+
 //Exposed for APCCorrelationsSelectorViewController
 @property (nonatomic, strong) NSString *caption;
 @property (nonatomic, strong) NSString *series1Name;

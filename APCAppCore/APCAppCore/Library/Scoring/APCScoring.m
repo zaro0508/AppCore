@@ -67,7 +67,6 @@ static NSInteger const          kNumberOfDaysInYear    = 365;
 @property (nonatomic) APHTimelineGroups groupBy;
 @property (nonatomic) NSUInteger current;
 @property (nonatomic) NSUInteger correlatedCurrent;
-@property (nonatomic) NSInteger numberOfDays;
 @property (nonatomic) BOOL usesHealthKitData;
 @property (nonatomic) BOOL latestOnly;
 

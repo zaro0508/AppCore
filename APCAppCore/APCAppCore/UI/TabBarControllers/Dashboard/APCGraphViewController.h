@@ -37,6 +37,22 @@
 
 @class APCScoring;
 
+static NSInteger const APCGraphView5DaysAgo    = -5;
+static NSInteger const APCGraphView7DaysAgo    = -7;
+static NSInteger const APCGraphView30DaysAgo   = -30;
+static NSInteger const APCGraphView90DaysAgo   = -90;
+static NSInteger const APCGraphView180DaysAgo  = -180;
+static NSInteger const APCGraphView365DaysAgo  = -365;
+
+typedef NS_ENUM(NSUInteger, APCGraphViewPeriod) {
+    APCGraphViewPeriodLast5Days = 0,
+    APCGraphViewPeriodLastWeek,
+    APCGraphViewPeriodLastMonth,
+    APCGraphViewPeriodLast3Months,
+    APCGraphViewPeriodLast6Months,
+    APCGraphViewPeriodLastYear
+};
+
 @interface APCGraphViewController : UIViewController <APCScoringDelegate>
 
 @property (weak, nonatomic) IBOutlet APCLineGraphView *lineGraphView;
