@@ -188,12 +188,7 @@
     _spinnerController.landscape = YES;
     [self presentViewController:_spinnerController animated:YES completion:nil];
     
-    [self updateControlToIndex:sender.selectedSegmentIndex];
-}
-
-- (void) updateControlToIndex:(NSInteger)index
-{
-    switch (index) {
+    switch (sender.selectedSegmentIndex) {
         case APCGraphViewPeriodLast5Days:
         {
             //Last 5 days
@@ -281,37 +276,31 @@
  */
 - (void) updateSegmentControlToGraphViewState
 {
-    // The segment control wont send updates during the view loading, so make sure all aspects update
+    [self.segmentedControl setSelectedSegmentIndex:APCGraphViewPeriodLastMonth];
     // Number of days will be negative, so check for greater than
     if (self.graphItem.graphData.numberOfDays > APCGraphView7DaysAgo)
     {
         [self.segmentedControl setSelectedSegmentIndex:APCGraphViewPeriodLast5Days];
-        [self updateControlToIndex:APCGraphViewPeriodLast5Days];
     }
     else if (self.graphItem.graphData.numberOfDays > APCGraphView30DaysAgo)
     {
         [self.segmentedControl setSelectedSegmentIndex:APCGraphViewPeriodLastWeek];
-        [self updateControlToIndex:APCGraphViewPeriodLastWeek];
     }
     else if (self.graphItem.graphData.numberOfDays > APCGraphView90DaysAgo)
     {
         [self.segmentedControl setSelectedSegmentIndex:APCGraphViewPeriodLastMonth];
-        [self updateControlToIndex:APCGraphViewPeriodLastMonth];
     }
     else if (self.graphItem.graphData.numberOfDays > APCGraphView180DaysAgo)
     {
         [self.segmentedControl setSelectedSegmentIndex:APCGraphViewPeriodLast3Months];
-        [self updateControlToIndex:APCGraphViewPeriodLast3Months];
     }
     else if (self.graphItem.graphData.numberOfDays > APCGraphView365DaysAgo)
     {
         [self.segmentedControl setSelectedSegmentIndex:APCGraphViewPeriodLast6Months];
-        [self updateControlToIndex:APCGraphViewPeriodLast6Months];
     }
     else
     {
         [self.segmentedControl setSelectedSegmentIndex:APCGraphViewPeriodLastYear];
-        [self updateControlToIndex:APCGraphViewPeriodLastYear];
     }
 }
 
