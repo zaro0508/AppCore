@@ -137,6 +137,8 @@
     [self.collapseButton.imageView setTintColor:self.graphItem.tintColor];
     
     self.tintView.backgroundColor = self.graphItem.tintColor;
+    
+    [self updateSegmentControlToGraphViewState];
 }
 
 - (void)setSubTitleText
@@ -186,41 +188,52 @@
     _spinnerController.landscape = YES;
     [self presentViewController:_spinnerController animated:YES completion:nil];
     
-    switch (sender.selectedSegmentIndex) {
-        case 0:
+    [self updateControlToIndex:sender.selectedSegmentIndex];
+}
+
+- (void) updateControlToIndex:(NSInteger)index
+{
+    switch (index) {
+        case APCGraphViewPeriodLast5Days:
         {
             //Last 5 days
-            [self.graphItem.graphData updatePeriodForDays:-5 groupBy:APHTimelineGroupDay];
+            [self.graphItem.graphData updatePeriodForDays:APCGraphView5DaysAgo
+                                                  groupBy:APHTimelineGroupDay];
         }
             break;
-        case 1:
+        case APCGraphViewPeriodLastWeek:
         {
             //Last 1 week (7 days)
-            [self.graphItem.graphData updatePeriodForDays:-7 groupBy:APHTimelineGroupDay];
+            [self.graphItem.graphData updatePeriodForDays:APCGraphView7DaysAgo
+                                                  groupBy:APHTimelineGroupDay];
         }
             break;
-        case 2:
+        case APCGraphViewPeriodLastMonth:
         {
             //Last 1 Month (30 days)
-            [self.graphItem.graphData updatePeriodForDays:-30 groupBy:APHTimelineGroupWeek];
+            [self.graphItem.graphData updatePeriodForDays:APCGraphView30DaysAgo
+                                                  groupBy:APHTimelineGroupWeek];
         }
             break;
-        case 3:
+        case APCGraphViewPeriodLast3Months:
         {
             //Last 3 Months (90 days)
-            [self.graphItem.graphData updatePeriodForDays:-90 groupBy:APHTimelineGroupMonth];
+            [self.graphItem.graphData updatePeriodForDays:APCGraphView90DaysAgo
+                                                  groupBy:APHTimelineGroupMonth];
         }
             break;
-        case 4:
+        case APCGraphViewPeriodLast6Months:
         {
             //Last 6 Months (180 days)
-            [self.graphItem.graphData updatePeriodForDays:-180 groupBy:APHTimelineGroupMonth];
+            [self.graphItem.graphData updatePeriodForDays:APCGraphView180DaysAgo
+                                                  groupBy:APHTimelineGroupMonth];
         }
             break;
-        case 5:
+        case APCGraphViewPeriodLastYear:
         {
             //Last 1 year (365 days)
-            [self.graphItem.graphData updatePeriodForDays:-365 groupBy:APHTimelineGroupMonth];
+            [self.graphItem.graphData updatePeriodForDays:APCGraphView365DaysAgo
+                                                  groupBy:APHTimelineGroupMonth];
         }
             break;
         default:
@@ -261,6 +274,45 @@
 -(void)graphViewControllerShouldUpdateChartWithScoring:(APCScoring *)__unused scoring
 {
     [self reloadCharts];
+}
+
+/*
+ * This method will sync up the graph period of the graph data with the segmented control that is selected
+ */
+- (void) updateSegmentControlToGraphViewState
+{
+    // The segment control wont send updates during the view loading, so make sure all aspects update
+    // Number of days will be negative, so check for greater than
+    if (self.graphItem.graphData.numberOfDays > APCGraphView7DaysAgo)
+    {
+        [self.segmentedControl setSelectedSegmentIndex:APCGraphViewPeriodLast5Days];
+        [self updateControlToIndex:APCGraphViewPeriodLast5Days];
+    }
+    else if (self.graphItem.graphData.numberOfDays > APCGraphView30DaysAgo)
+    {
+        [self.segmentedControl setSelectedSegmentIndex:APCGraphViewPeriodLastWeek];
+        [self updateControlToIndex:APCGraphViewPeriodLastWeek];
+    }
+    else if (self.graphItem.graphData.numberOfDays > APCGraphView90DaysAgo)
+    {
+        [self.segmentedControl setSelectedSegmentIndex:APCGraphViewPeriodLastMonth];
+        [self updateControlToIndex:APCGraphViewPeriodLastMonth];
+    }
+    else if (self.graphItem.graphData.numberOfDays > APCGraphView180DaysAgo)
+    {
+        [self.segmentedControl setSelectedSegmentIndex:APCGraphViewPeriodLast3Months];
+        [self updateControlToIndex:APCGraphViewPeriodLast3Months];
+    }
+    else if (self.graphItem.graphData.numberOfDays > APCGraphView365DaysAgo)
+    {
+        [self.segmentedControl setSelectedSegmentIndex:APCGraphViewPeriodLast6Months];
+        [self updateControlToIndex:APCGraphViewPeriodLast6Months];
+    }
+    else
+    {
+        [self.segmentedControl setSelectedSegmentIndex:APCGraphViewPeriodLastYear];
+        [self updateControlToIndex:APCGraphViewPeriodLastYear];
+    }
 }
 
 @end
