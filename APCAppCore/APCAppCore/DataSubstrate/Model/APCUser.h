@@ -61,6 +61,7 @@ typedef NS_ENUM(NSInteger, APCUserConsentSharingScope) {
 @property (nonatomic, strong) NSString * email;
 @property (nonatomic, strong) NSString * password;
 @property (nonatomic, strong) NSString * sessionToken;
+@property (nonatomic, strong) NSString * externalId;
 @property (nonatomic) NSString * subpopulationGuid;
 
 /*********************************************************************************/

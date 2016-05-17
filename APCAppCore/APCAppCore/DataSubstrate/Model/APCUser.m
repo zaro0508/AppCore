@@ -51,6 +51,7 @@ static NSString *const kLastNamePropertyName = @"lastName";
 static NSString *const kEmailPropertyName = @"email";
 static NSString *const kPasswordPropertyName = @"password";
 static NSString *const kSessionTokenPropertyName = @"sessionToken";
+static NSString *const kExternalIdPropertyName = @"externalId";
 
 static NSString *const kSharedOptionSelection = @"sharedOptionSelection";
 static NSString *const kTaskCompletion = @"taskCompletion";
@@ -272,6 +273,16 @@ static NSString *const kSignedInKey = @"SignedIn";
 -(void)setPassword:(NSString *)password
 {
     [APCKeychainStore setString:[self hashIfNeeded:password] forKey:kPasswordPropertyName];
+}
+
+- (NSString *)externalId
+{
+    return [APCKeychainStore stringForKey:kExternalIdPropertyName];
+}
+
+-(void)setExternalId:(NSString *)externalId
+{
+    [APCKeychainStore setString:externalId forKey:kExternalIdPropertyName];
 }
 
 - (NSString*) hashIfNeeded: (NSString*) password
