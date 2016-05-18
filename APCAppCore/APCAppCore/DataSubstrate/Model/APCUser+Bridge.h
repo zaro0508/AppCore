@@ -59,10 +59,8 @@
 /**
  * Login a user on this device via externalId where registration was handled on a different device
  * ExternalID property must not be nil before calling this method
- * @param defaultEmailAddress is the email address that will be used as the basis for creating the external ID login
  */
-- (void) signInUserWithExternalIdUsingDefaultEmailAddress:(NSString*)defaultEmailAddress
-                                               completion:(void (^)(NSError *))completionBlock;
+- (void) signInUserWithExternalIdOnCompletion:(void (^)(NSError *))completionBlock;
 
 - (void) signOutOnCompletion:(void (^)(NSError * error))completionBlock;
 - (void) updateDataGroups:(NSArray<NSString *> *)dataGroups onCompletion:(void (^)(NSError * error))completionBlock;

@@ -40,6 +40,9 @@ static BOOL shouldPerformTestUserEmailCheckOnSignup = NO;
 static NSString* const kHiddenTestEmailString = @"+test";
 static NSString* const kTestDataGroup = @"test_user";
 
+// Found in APCParamters.json
+static NSString* const kBaseEmailAddressForExternalIdKey = @"baseEmailAddressForExternalId";
+
 @implementation APCUser (Bridge)
 
 - (BOOL) serverDisabled
@@ -400,8 +403,7 @@ static NSString* const kTestDataGroup = @"test_user";
     }
 }
 
-- (void) signInUserWithExternalIdUsingDefaultEmailAddress:(NSString*)defaultEmailAddress
-                                               completion:(void (^)(NSError *))completionBlock
+- (void) signInUserWithExternalIdOnCompletion:(void (^)(NSError *))completionBlock
 {
     if (self.externalId == nil || self.externalId.length == 0)
     {
@@ -410,12 +412,19 @@ static NSString* const kTestDataGroup = @"test_user";
     }
     
     NSString* newEmailSuffix = [NSString stringWithFormat:@"+%@@", self.externalId];
-    
-    self.email = [defaultEmailAddress stringByReplacingOccurrencesOfString:@"@"
-                                                                withString:newEmailSuffix];
+    self.email = [[self baseEmailAddressForExternalId] stringByReplacingOccurrencesOfString:@"@"
+                                                                                 withString:newEmailSuffix];
     self.password = self.externalId;
     
     [self signInOnCompletion:completionBlock];
+}
+
+- (NSString*) baseEmailAddressForExternalId
+{
+    APCAppDelegate *delegate = (APCAppDelegate*) [UIApplication sharedApplication].delegate;
+    APCParameters* params = delegate.dataSubstrate.parameters;
+    NSString* email = [params stringForKey:kBaseEmailAddressForExternalIdKey];
+    return email;
 }
 
 - (void)signOutOnCompletion:(void (^)(NSError *))completionBlock
