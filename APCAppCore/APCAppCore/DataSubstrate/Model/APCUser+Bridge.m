@@ -400,6 +400,23 @@ static NSString* const kTestDataGroup = @"test_user";
     }
 }
 
+- (void) signInUserWithExternalIdUsingDefaultEmailAddress:(NSString*)defaultEmailAddress
+                                               completion:(void (^)(NSError *))completionBlock
+{
+    if (self.externalId == nil || self.externalId.length == 0)
+    {
+        APCLogError(@"External ID cannot be nil");
+        return;
+    }
+    
+    NSString* newEmailSuffix = [NSString stringWithFormat:@"+%@@", self.externalId];
+    
+    self.email = [defaultEmailAddress stringByReplacingOccurrencesOfString:@"@"
+                                                                withString:newEmailSuffix];
+    self.password = self.externalId;
+    
+    [self signInOnCompletion:completionBlock];
+}
 
 - (void)signOutOnCompletion:(void (^)(NSError *))completionBlock
 {
