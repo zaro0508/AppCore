@@ -424,6 +424,12 @@ static NSString* const kBaseEmailAddressForExternalIdKey = @"baseEmailAddressFor
     APCAppDelegate *delegate = (APCAppDelegate*) [UIApplication sharedApplication].delegate;
     APCParameters* params = delegate.dataSubstrate.parameters;
     NSString* email = [params stringForKey:kBaseEmailAddressForExternalIdKey];
+    
+    if (email == nil)
+    {
+        APCLogError(@"Error: baseEmailAddressForExternalId is not defined in your APCParameters.json");
+    }
+    
     return email;
 }
 
