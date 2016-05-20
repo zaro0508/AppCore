@@ -55,6 +55,13 @@
                  onCompletion:(void (^)(NSError *))completionBlock;
 
 - (void) signInOnCompletion:(void (^)(NSError * error))completionBlock;
+
+/**
+ * Login a user on this device via externalId where registration was handled on a different device
+ * ExternalID property must not be nil before calling this method
+ */
+- (void) signInUserWithExternalIdOnCompletion:(void (^)(NSError *))completionBlock;
+
 - (void) signOutOnCompletion:(void (^)(NSError * error))completionBlock;
 - (void) updateDataGroups:(NSArray<NSString *> *)dataGroups onCompletion:(void (^)(NSError * error))completionBlock;
 - (void) updateProfileOnCompletion:(void (^)(NSError * error))completionBlock;
