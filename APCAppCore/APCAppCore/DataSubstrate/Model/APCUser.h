@@ -36,6 +36,7 @@
 #import <CoreData/CoreData.h>
 #import <UIKit/UIKit.h>
 
+
 typedef NS_ENUM(NSInteger, APCUserConsentSharingScope) {
     APCUserConsentSharingScopeNone = 0,
     APCUserConsentSharingScopeStudy,
@@ -47,80 +48,80 @@ typedef NS_ENUM(NSInteger, APCUserConsentSharingScope) {
 /*********************************************************************************/
 #pragma mark - Designated Intializer
 /*********************************************************************************/
-- (instancetype)initWithContext: (NSManagedObjectContext*) context;
+- (instancetype _Nonnull)initWithContext: (NSManagedObjectContext* _Nonnull) context;
 
 /*********************************************************************************/
 #pragma mark - Stored Properties in Keychain
 /*********************************************************************************/
 
-@property (nonatomic, strong) NSString * name;
+@property (nonatomic, strong, nullable) NSString * name;
 
-@property (nonatomic, strong) NSString * firstName DEPRECATED_ATTRIBUTE;
-@property (nonatomic, strong) NSString * lastName DEPRECATED_ATTRIBUTE;
+@property (nonatomic, strong, nullable) NSString * firstName DEPRECATED_ATTRIBUTE;
+@property (nonatomic, strong, nullable) NSString * lastName DEPRECATED_ATTRIBUTE;
 
-@property (nonatomic, strong) NSString * email;
-@property (nonatomic, strong) NSString * password;
-@property (nonatomic, strong) NSString * sessionToken;
-@property (nonatomic, strong) NSString * externalId;
-@property (nonatomic) NSString * subpopulationGuid;
+@property (nonatomic, strong, nullable) NSString * email;
+@property (nonatomic, strong, nullable) NSString * password;
+@property (nonatomic, strong, nullable) NSString * sessionToken;
+@property (nonatomic, strong, nullable) NSString * externalId;
+@property (nonatomic, nullable) NSString * subpopulationGuid;
 
 /*********************************************************************************/
 #pragma mark - Stored Properties in Core Data
 /*********************************************************************************/
 @property (nonatomic) APCUserConsentSharingScope sharingScope;      // NOT stored to CoreData, reflected in "sharedOptionSelection"
-@property (nonatomic) NSNumber *sharedOptionSelection;
-@property (nonatomic, strong) NSData *profileImage;
+@property (nonatomic, nullable) NSNumber *sharedOptionSelection;
+@property (nonatomic, strong, nullable) NSData *profileImage;
 
 @property (nonatomic, getter=isConsented) BOOL consented; //Confirmation that server is consented. Should be used in the app to test for user consent.
 @property (nonatomic, getter=isUserConsented) BOOL userConsented; //User has consented though not communicated to the server.
 
-@property (nonatomic, strong) NSDate * taskCompletion;
+@property (nonatomic, strong, nullable) NSDate * taskCompletion;
 @property (nonatomic) NSInteger hasHeartDisease;
 @property (nonatomic) NSInteger dailyScalesCompletionCounter;
-@property (nonatomic, strong) NSString *customSurveyQuestion;
-@property (nonatomic, strong) NSString *phoneNumber;
+@property (nonatomic, strong, nullable) NSString *customSurveyQuestion;
+@property (nonatomic, strong, nullable) NSString *phoneNumber;
 @property (nonatomic) BOOL allowContact;
-@property (nonatomic, strong) NSString * medicalConditions;
-@property (nonatomic, strong) NSString * medications;
-@property (nonatomic, strong) NSString *ethnicity;
+@property (nonatomic, strong, nullable) NSString * medicalConditions;
+@property (nonatomic, strong, nullable) NSString * medications;
+@property (nonatomic, strong, nullable) NSString *ethnicity;
 
-@property (nonatomic, strong) NSDate *sleepTime;
-@property (nonatomic, strong) NSDate *wakeUpTime;
+@property (nonatomic, strong, nullable) NSDate *sleepTime;
+@property (nonatomic, strong, nullable) NSDate *wakeUpTime;
 
-@property (nonatomic, strong) NSString *glucoseLevels;
+@property (nonatomic, strong, nullable) NSString *glucoseLevels;
 
-@property (nonatomic, strong) NSString *homeLocationAddress;
-@property (nonatomic, strong) NSNumber *homeLocationLat;
-@property (nonatomic, strong) NSNumber *homeLocationLong;
+@property (nonatomic, strong, nullable) NSString *homeLocationAddress;
+@property (nonatomic, strong, nullable) NSNumber *homeLocationLat;
+@property (nonatomic, strong, nullable) NSNumber *homeLocationLong;
 
-@property (nonatomic, strong) NSString *consentSignatureName;
-@property (nonatomic, strong) NSDate *consentSignatureDate;
-@property (nonatomic, strong) NSData *consentSignatureImage;
+@property (nonatomic, strong, nullable) NSString *consentSignatureName;
+@property (nonatomic, strong, nullable) NSDate *consentSignatureDate;
+@property (nonatomic, strong, nullable) NSData *consentSignatureImage;
 
-@property (nonatomic, strong) NSDate *downloadDataStartDate; // NOT stored in CoreData
-@property (nonatomic, strong) NSDate *downloadDataEndDate; // NOT stored in CoreData
+@property (nonatomic, strong, nullable) NSDate *downloadDataStartDate; // NOT stored in CoreData
+@property (nonatomic, strong, nullable) NSDate *downloadDataEndDate; // NOT stored in CoreData
 
 @property (nonatomic, getter=isSecondaryInfoSaved) BOOL secondaryInfoSaved;
 
 /*********************************************************************************/
 #pragma mark - Simulated Properties using HealthKit
 /*********************************************************************************/
-@property (nonatomic, strong) NSDate * birthDate;
+@property (nonatomic, strong, nullable) NSDate * birthDate;
 @property (nonatomic) HKBiologicalSex biologicalSex;
 @property (nonatomic) HKBloodType bloodType;
 
 
-@property (nonatomic, strong) HKQuantity * height;
-@property (nonatomic, strong) HKQuantity * weight;
-@property (nonatomic, strong) HKQuantity *systolicBloodPressure;
+@property (nonatomic, strong, nullable) HKQuantity * height;
+@property (nonatomic, strong, nullable) HKQuantity * weight;
+@property (nonatomic, strong, nullable) HKQuantity *systolicBloodPressure;
 
 /*********************************************************************************/
 #pragma mark - NSUserDefaults Simulated Properties
 /*********************************************************************************/
 @property (nonatomic, getter=isSignedUp) BOOL signedUp;
 @property (nonatomic, getter=isSignedIn) BOOL signedIn;
-@property (nonatomic) NSNumber * savedSharingScope;
-@property (nonatomic) NSArray * dataGroups;
+@property (nonatomic, nullable) NSNumber * savedSharingScope;
+@property (nonatomic, nullable) NSArray <NSString *> * dataGroups;
 
 - (BOOL) isLoggedOut;
 
@@ -133,7 +134,7 @@ typedef NS_ENUM(NSInteger, APCUserConsentSharingScope) {
  represents a set of next-best-guesses about that date,
  for users who signed up before we started tracking it.
  */
-@property (readonly) NSDate *estimatedConsentDate;
+@property (readonly, nullable) NSDate *estimatedConsentDate;
 
 /**
  Returns the best approximation we have for a user-consent
@@ -142,6 +143,6 @@ typedef NS_ENUM(NSInteger, APCUserConsentSharingScope) {
  migration, when we attach start dates to existing
  schedules, as well as during normal operation.
  */
-+ (NSDate *) proxyForConsentDate;
++ (NSDate * _Nullable) proxyForConsentDate;
 
 @end
