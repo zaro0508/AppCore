@@ -262,13 +262,17 @@ NSString * const kAPCOnboardingStoryboardName = @"APCOnboarding";
     return nil;
 }
 
+- (BOOL)validateConsentResult:(ORKConsentSignatureResult *)consentResult {
+    return consentResult.signature.requiresName && (consentResult.signature.givenName && consentResult.signature.familyName);
+}
+
 - (BOOL)checkForConsentWithTaskViewController:(ORKTaskViewController *)taskViewController {
     
     // search for the consent signature
     ORKConsentSignatureResult *consentResult = [self findConsentSignatureResult:taskViewController.result];
     
     //  if no signature (no consent result) then assume the user failed the quiz
-    if (consentResult != nil && consentResult.signature.requiresName && (consentResult.signature.givenName && consentResult.signature.familyName)) {
+    if (consentResult != nil && [self validateConsentResult:consentResult]) {
         
         // extract the user's sharing choice
         ORKConsentSharingStep *sharingStep = [self findConsentSharingStep:taskViewController];
