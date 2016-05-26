@@ -129,7 +129,7 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
     
     [self setupAppearance];
     
-    self.nameTextField.delegate = self;
+    
     
     [self.profileImageButton.imageView setContentMode:UIViewContentModeScaleAspectFill];
     
@@ -139,11 +139,21 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
     
     self.applicationNameLabel.text = [APCUtilities appName];
     
-    self.nameTextField.text = self.user.name;
-    self.nameTextField.enabled = NO;
-    
-    self.emailTextField.text = self.user.email;
-    self.emailTextField.enabled = NO;
+    if ([[APCAppDelegate sharedAppDelegate] shouldShowExternalIDOnlyInProfile]) {
+        self.nameTextField.delegate = nil;
+        self.nameTextField.text = self.user.externalId;
+        self.nameTextField.enabled = NO;
+        self.emailTextField.hidden = YES;
+    }
+    else {
+        self.nameTextField.delegate = self;
+        
+        self.nameTextField.text = self.user.name;
+        self.nameTextField.enabled = NO;
+        
+        self.emailTextField.text = self.user.email;
+        self.emailTextField.enabled = NO;
+    }
     
     self.profileImage = [UIImage imageWithData:self.user.profileImage];
     if (self.profileImage) {
@@ -1268,7 +1278,9 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
 
 - (void)loadProfileValuesInModel
 {
-    self.user.name = self.nameTextField.text;
+    if (![[APCAppDelegate sharedAppDelegate] shouldShowExternalIDOnlyInProfile]) {
+        self.user.name = self.nameTextField.text;
+    }
     
     if (self.profileImage) {
         self.user.profileImage = UIImageJPEGRepresentation(self.profileImage, 1.0);
@@ -1643,7 +1655,7 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
     }
 
     
-    self.nameTextField.enabled = self.isEditing;
+    self.nameTextField.enabled = self.isEditing && ![[APCAppDelegate sharedAppDelegate] shouldShowExternalIDOnlyInProfile];
     
     [self.tableView reloadData];
 
