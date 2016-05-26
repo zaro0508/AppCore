@@ -146,6 +146,10 @@ static NSString *_defaultService;
                 [self removeItemForKey:key service:service accessGroup:accessGroup];
             }
         } else if (status == errSecItemNotFound) {
+            if (data == nil) {
+                // Item already removed
+                return YES;
+            }
             NSMutableDictionary *attributes = [[NSMutableDictionary alloc] init];
             [attributes setObject:(__bridge id)kSecClassGenericPassword forKey:(__bridge id)kSecClass];
             [attributes setObject:service forKey:(__bridge id)kSecAttrService];
