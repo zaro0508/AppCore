@@ -68,6 +68,7 @@ extern NSString *const kNewsFeedStoryBoardKey;
 @property (strong, nonatomic) APCProfileViewController * profileViewController;
 @property (nonatomic) BOOL disableSignatureInConsent;
 @property (nonatomic, strong) APCDataUploader *dataUploader;
+@property (nonatomic) BOOL shouldShowExternalIDOnlyInProfile;
 
 //Initialization Methods
 @property (nonatomic, getter=doesPersisteStoreExist) BOOL persistentStoreExistence;
