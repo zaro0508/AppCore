@@ -642,10 +642,11 @@ static NSString* const kBaseEmailAddressForExternalIdKey = @"baseEmailAddressFor
     
     void (^showVcBlock)() = ^
     {
-        NSString* yesStr = NSLocalizedString(@"YES", @"Positive Answer");
-        NSString* noStr =  NSLocalizedString(@"NO", @"Negative Answer");
-        NSString* title =  NSLocalizedString(@"Are you a tester?", @"Question if the user is a quality assurance tester");
-        NSString* msg = [NSString stringWithFormat:NSLocalizedString(@"Based on your email address, we have detected you are a tester for %@.  If this is correct, select %@ so we can store your data separately.", @"Message informing user if and what happens if they are a tester"), [APCUtilities appName], [yesStr lowercaseString]];
+        NSString* yesStr = NSLocalizedStringWithDefaultValue(@"YES", @"APCAppCore", APCBundle(), @"YES", @"Positive Answer");
+        NSString* noStr = NSLocalizedStringWithDefaultValue(@"NO", @"APCAppCore", APCBundle(), @"NO", @"Negative Answer");
+        NSString* title = NSLocalizedStringWithDefaultValue(@"Are you a tester?", @"APCAppCore", APCBundle(), @"Are you a tester?", @"Question if the user is a quality assurance tester");
+        NSString* msgFormat = NSLocalizedStringWithDefaultValue(@"Based on your email address, we have detected you are a tester for %@.  If this is correct, select %@ so we can store your data separately.", @"APCAppCore", APCBundle(), @"Based on your email address, we have detected you are a tester for %@.  If this is correct, select %@ so we can store your data separately.", @"Message informing user if and what happens if they are a tester");
+        NSString* msg = [NSString stringWithFormat:msgFormat, [APCUtilities appName], [yesStr lowercaseString]];
         
         UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
                                                                        message:msg
