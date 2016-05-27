@@ -82,6 +82,10 @@ static CGFloat const kPickerCellHeight = 164.0f;
 static NSString * const kAPCBasicTableViewCellIdentifier = @"APCBasicTableViewCell";
 static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetailTableViewCell";
 
+@interface APCUserInfoViewController()
+- (void) setEditing:(BOOL) isEditing;
+@end
+
 @interface APCProfileViewController () <ORKTaskViewControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UILabel *versionLabel;
@@ -409,7 +413,7 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
                     APCSegmentedTableViewCell *segmentedCell = (APCSegmentedTableViewCell *)cell;
                     segmentedCell.delegate = self;
                     segmentedCell.selectedSegmentIndex = segmentPickerField.selectedIndex;
-                    segmentedCell.userInteractionEnabled = segmentPickerField.editable;
+                    segmentedCell.userInteractionEnabled = segmentPickerField.editable && self.isEditing;
                     
                 }
                 else if ([field isKindOfClass:[APCTableViewSwitchItem class]]) {
@@ -436,6 +440,24 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
     return cell;
 }
 
+- (void) setEditing:(BOOL) isEditing
+{
+    [super setEditing:isEditing];
+    
+    NSArray* visibleCells = [self.tableView visibleCells];
+    for (UITableViewCell* cell in visibleCells) {
+        
+        // Segment control cells do not respond to didSelectRowAtIndex,
+        // So we need to change the editable property
+        if ([cell isKindOfClass:[APCSegmentedTableViewCell class]])
+        {
+            NSIndexPath* indexPath = [self.tableView indexPathForCell:cell];
+            APCTableViewItem *field = [self itemForIndexPath:indexPath];
+            cell.userInteractionEnabled = field.editable && self.isEditing;
+        }
+    }
+}
+
 #pragma mark - Prepare Content
 
 - (NSArray *)prepareContent
@@ -452,15 +474,38 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
             APCUserInfoItemType itemType = type.integerValue;
             
             switch (itemType) {
+                    
                 case kAPCUserInfoItemTypeBiologicalSex:
                 {
-                    APCTableViewItem *field = [APCTableViewItem new];
-                    field.caption = NSLocalizedStringWithDefaultValue(@"Sex", @"APCAppCore", APCBundle(), @"Sex", @"");
-                    field.reuseIdentifier = kAPCDefaultTableViewCellIdentifier;
-                    field.editable = NO;
-                    field.textAlignnment = NSTextAlignmentRight;
-                    field.detailText = [APCUser stringValueFromSexType:self.user.biologicalSex];
-                    field.selectionStyle = self.isEditing ? UITableViewCellSelectionStyleGray : UITableViewCellSelectionStyleNone;
+                    APCTableViewItem *field = nil;
+                    
+                    // If we can edit biological sex, change the UI to be a segment control
+                    if (self.canEditBiologicalSex)
+                    {
+                        APCTableViewSegmentItem *segmentField = [APCTableViewSegmentItem new];
+                        segmentField.style = UITableViewCellStyleValue1;
+                        segmentField.segments = [APCUser sexTypesInStringValue];
+                        segmentField.reuseIdentifier = kAPCSegmentedTableViewCellIdentifier;
+                        
+                        if (self.user.biologicalSex) {
+                            segmentField.selectedIndex = [APCUser stringIndexFromSexType:self.user.biologicalSex];
+                            segmentField.editable = self.canEditBiologicalSex;
+                        } else {
+                            segmentField.editable = YES; // make it always editable, since user hasnt provided a valid value yet
+                        }
+                        segmentField.selectionStyle = self.isEditing && field.editable ? UITableViewCellSelectionStyleGray : UITableViewCellSelectionStyleNone;
+                        field = segmentField;
+                    }
+                    else  // if we cant edit sex, show a simple default table view cell
+                    {
+                        field = [APCTableViewItem new];
+                        field.caption = NSLocalizedStringWithDefaultValue(@"Sex", @"APCAppCore", APCBundle(), @"Sex", @"");
+                        field.reuseIdentifier = kAPCDefaultTableViewCellIdentifier;
+                        field.editable = NO;
+                        field.textAlignnment = NSTextAlignmentRight;
+                        field.detailText = [APCUser stringValueFromSexType:self.user.biologicalSex];
+                        field.selectionStyle = UITableViewCellSelectionStyleNone;
+                    }
                     
                     APCTableViewRow *row = [APCTableViewRow new];
                     row.item = field;
@@ -471,13 +516,45 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
                 
                 case kAPCUserInfoItemTypeDateOfBirth:
                 {
-                    APCTableViewItem *field = [APCTableViewItem new];
+                    APCTableViewItem *field = nil;
+
+                    if (self.canEditBirthDate) // If we can edit birthdate, change the UI to be a date picker
+                    {
+                        APCTableViewDatePickerItem *dateField = [APCTableViewDatePickerItem new];
+                        dateField.datePickerMode = UIDatePickerModeDate;
+                        NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier: NSCalendarIdentifierGregorian];
+                        NSDate *currentDate = [[NSDate date] startOfDay];
+                        NSDateComponents * comps = [[NSDateComponents alloc] init];
+                        [comps setYear: -18];
+                        NSDate *maxDate = [gregorian dateByAddingComponents: comps toDate: currentDate options: 0];
+                        dateField.maximumDate = maxDate;
+                        
+                        if (self.user.birthDate) {
+                            dateField.date = self.user.birthDate;
+                            dateField.detailText = [dateField.date toStringWithFormat:dateField.dateFormat];
+                            dateField.editable = self.canEditBirthDate;
+                        } else {
+                            dateField.editable = YES; // make it always editable, since user hasnt provided a valid value yet
+                            dateField.date = nil;
+                            dateField.detailText = @"";
+                        }
+                        field = dateField;
+                    }
+                    else // if we cant edit sex, show a simple default table view cell
+                    {
+                        field = [APCTableViewItem new];
+                        field.editable = NO;
+                        field.textAlignnment = NSTextAlignmentRight;
+                        field.detailText = [self.user.birthDate toStringWithFormat:NSDateDefaultDateFormat];
+                        field.selectionStyle = self.isEditing ? UITableViewCellSelectionStyleGray : UITableViewCellSelectionStyleNone;
+                    }
+                    
                     field.caption = NSLocalizedStringWithDefaultValue(@"Birthdate", @"APCAppCore", APCBundle(), @"Birthdate", @"");
+                    
+                    field.style = UITableViewCellStyleValue1;
                     field.reuseIdentifier = kAPCDefaultTableViewCellIdentifier;
-                    field.editable = NO;
-                    field.textAlignnment = NSTextAlignmentRight;
-                    field.detailText = [self.user.birthDate toStringWithFormat:NSDateDefaultDateFormat];
-                    field.selectionStyle = self.isEditing ? UITableViewCellSelectionStyleGray : UITableViewCellSelectionStyleNone;
+                    field.textAlignnment = NSTextAlignmentRight;                                                            
+                    field.selectionStyle = self.isEditing && field.editable ? UITableViewCellSelectionStyleGray : UITableViewCellSelectionStyleNone;
                     
                     APCTableViewRow *row = [APCTableViewRow new];
                     row.item = field;
@@ -1141,6 +1218,16 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
                 }
             }
                 break;
+                
+            case kAPCUserInfoItemTypeDateOfBirth:
+            {
+                APCTableViewItem *field = [self itemForIndexPath:indexPath];
+                if (self.isEditing && field.isEditable) {
+                    [super tableView:tableView didSelectRowAtIndexPath:indexPath];
+                }
+                [tableView deselectRowAtIndexPath:indexPath animated:YES];
+            }
+                break;
             
             default:{
                 [super tableView:tableView didSelectRowAtIndexPath:indexPath];
@@ -1231,6 +1318,14 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
         NSInteger index = ((NSNumber *)selectedIndices[0]).integerValue;
         [[NSUserDefaults standardUserDefaults] setObject:[APCProfileViewController autoLockValues][index] forKey:kNumberOfMinutesForPasscodeKey];
     }
+}
+
+#pragma mark APCSegmentedTableViewCellDelegate methods
+
+- (void)segmentedTableViewCell:(APCSegmentedTableViewCell *) __unused cell
+       didSelectSegmentAtIndex:(NSInteger) __unused index
+{
+    [super segmentedTableViewCell:cell didSelectSegmentAtIndex:index];
 }
 
 #pragma mark - UIImagePickerControllerDelegate
@@ -1371,6 +1466,14 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
                     break;
                 
                 case kAPCSettingsItemTypeSharingOptions:
+                    break;
+                    
+                case kAPCUserInfoItemTypeDateOfBirth:
+                    self.user.birthDate = [(APCTableViewDatePickerItem *)item date];
+                    break;
+                    
+                case kAPCUserInfoItemTypeBiologicalSex:
+                    self.user.biologicalSex = [APCUser sexTypeForIndex:((APCTableViewSegmentItem *)item).selectedIndex];
                     break;
                 
                 default:

@@ -37,7 +37,7 @@
 
 @protocol APCProfileViewControllerDelegate;
 
-@interface APCProfileViewController : APCUserInfoViewController <APCPickerTableViewCellDelegate, APCTextFieldTableViewCellDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate,UITextFieldDelegate, APCSwitchTableViewCellDelegate>
+@interface APCProfileViewController : APCUserInfoViewController <APCPickerTableViewCellDelegate, APCTextFieldTableViewCellDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate,UITextFieldDelegate, APCSwitchTableViewCellDelegate, APCSegmentedTableViewCellDelegate>
 
 @property (nonatomic, strong) APCUser *user;
 
@@ -72,6 +72,9 @@
 @property (nonatomic, weak) id <APCProfileViewControllerDelegate> delegate;
 
 @property (nonatomic, strong) UIImage *profileImage;
+
+@property (nonatomic) BOOL canEditBirthDate;
+@property (nonatomic) BOOL canEditBiologicalSex;
 
 
 - (IBAction)leaveStudy:(id)sender;
