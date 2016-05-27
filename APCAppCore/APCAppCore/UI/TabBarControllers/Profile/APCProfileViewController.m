@@ -448,7 +448,7 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
     for (UITableViewCell* cell in visibleCells) {
         
         // Segment control cells do not respond to didSelectRowAtIndex,
-        // So we need to change the editable property
+        // So we need to change the editable property here, instead of blocking it in didSelectRowAtIndex
         if ([cell isKindOfClass:[APCSegmentedTableViewCell class]])
         {
             NSIndexPath* indexPath = [self.tableView indexPathForCell:cell];

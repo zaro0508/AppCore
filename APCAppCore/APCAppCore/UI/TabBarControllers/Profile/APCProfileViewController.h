@@ -73,7 +73,16 @@
 
 @property (nonatomic, strong) UIImage *profileImage;
 
+/*
+ * If set to YES, birthdate will be a Date Picker Cell, and can be edited when isEditing is also set to YES
+ * If set to NO, birthdate will be a Default Cell, with its value locked no matter what
+ */
 @property (nonatomic) BOOL canEditBirthDate;
+
+/*
+ * If set to YES, biological sex will be a Segment Cell, and can be edited when isEditing is also set to YES
+ * If set to NO, biological sex will be a Default Cell, with its value locked no matter what
+ */
 @property (nonatomic) BOOL canEditBiologicalSex;
 
 
