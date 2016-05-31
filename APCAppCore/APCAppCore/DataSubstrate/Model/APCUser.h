@@ -110,6 +110,9 @@ typedef NS_ENUM(NSInteger, APCUserConsentSharingScope) {
 @property (nonatomic) HKBiologicalSex biologicalSex;
 @property (nonatomic) HKBloodType bloodType;
 
+// @return YES if birthdate property comes from healthkit, NO if comes from core data
+- (BOOL) hasBirthDateInHealthKit;
+- (BOOL) hasBiologicalSexInHealthKit;
 
 @property (nonatomic, strong, nullable) HKQuantity * height;
 @property (nonatomic, strong, nullable) HKQuantity * weight;

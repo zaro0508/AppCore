@@ -528,6 +528,14 @@ static NSString *const kSignedInKey = @"SignedIn";
     [self updateStoredProperty:kBirthDatePropertyName withValue:birthDate];
 }
 
+- (BOOL) hasBirthDateInHealthKit
+{
+    NSError *error;
+    NSDate *dateOfBirth = [self.healthStore dateOfBirthWithError:&error];
+    APCLogError2 (error);
+    return dateOfBirth != nil;
+}
+
 - (HKBiologicalSex)biologicalSex
 {
     NSError *error;
@@ -540,6 +548,14 @@ static NSString *const kSignedInKey = @"SignedIn";
 {
     _biologicalSex = biologicalSex;
     [self updateStoredProperty:kBiologicalSexPropertyName withValue:@(biologicalSex)];
+}
+
+- (BOOL) hasBiologicalSexInHealthKit
+{
+    NSError *error;
+    HKBiologicalSexObject * sexObject = [self.healthStore biologicalSexWithError:&error];
+    APCLogError2 (error);
+    return sexObject.biologicalSex != HKBiologicalSexNotSet;
 }
 
 - (HKBloodType)bloodType
