@@ -1221,11 +1221,18 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
                 
             case kAPCUserInfoItemTypeDateOfBirth:
             {
-                APCTableViewItem *field = [self itemForIndexPath:indexPath];
-                if (self.isEditing && field.isEditable) {
-                    [super tableView:tableView didSelectRowAtIndexPath:indexPath];
+                if (![self isEditingAllowedForHealthKitProperty:HKCharacteristicTypeIdentifierDateOfBirth])
+                {
+                    [self showEditingNotAllowedAlertForHealthKitProperty:HKCharacteristicTypeIdentifierDateOfBirth];
+                    [tableView deselectRowAtIndexPath:indexPath animated:YES];
                 }
-                [tableView deselectRowAtIndexPath:indexPath animated:YES];
+                else
+                {
+                    APCTableViewItem *field = [self itemForIndexPath:indexPath];
+                    if (self.isEditing && field.isEditable) {
+                        [super tableView:tableView didSelectRowAtIndexPath:indexPath];
+                    }
+                }
             }
                 break;
             
@@ -1326,6 +1333,50 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
        didSelectSegmentAtIndex:(NSInteger) __unused index
 {
     [super segmentedTableViewCell:cell didSelectSegmentAtIndex:index];
+    
+    if (![self isEditingAllowedForHealthKitProperty:HKCharacteristicTypeIdentifierBiologicalSex])
+    {
+        [self showEditingNotAllowedAlertForHealthKitProperty:HKCharacteristicTypeIdentifierBiologicalSex];
+        // Revert back to whatever the index was originally
+        cell.selectedSegmentIndex = [APCUser stringIndexFromSexType:self.user.biologicalSex];
+    }
+}
+
+- (void) showEditingNotAllowedAlertForHealthKitProperty:(NSString*)healthKitPropertyIdentifier
+{
+    if ([self.delegate respondsToSelector:@selector(editingFailedForHealthKitType:)])
+    {
+        [self.delegate editingFailedForHealthKitType:healthKitPropertyIdentifier];
+    }
+    else  // Since there is no delegate, show our own alert view
+    {
+        NSString* title = NSLocalizedStringWithDefaultValue(@"Edit in Health App", @"APCAppCore", APCBundle(), @"Edit in Health App", @"");
+        NSString* msg = NSLocalizedStringWithDefaultValue(@"Since we are accessing this information through Health Kit, you can only change it through your device's Health App", @"APCAppCore", APCBundle(), @"Since we are accessing this information through Health Kit, you can only change it through your device's Health App", @"");
+        UIAlertController *alertView = [UIAlertController alertControllerWithTitle:title
+                                                                           message:msg
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* okAction = [UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"Okay", @"APCAppCore", APCBundle(), @"Okay", @"") style:UIAlertActionStyleDefault
+                                                         handler:^(UIAlertAction * __unused action) {}];
+        
+        [alertView addAction:okAction];
+        [self presentViewController:alertView animated:YES completion:nil];
+    }
+}
+
+- (BOOL) isEditingAllowedForHealthKitProperty:(NSString*) healthKitPropertyIdentifier
+{
+    if (healthKitPropertyIdentifier == HKCharacteristicTypeIdentifierBiologicalSex &&
+        self.canEditBiologicalSex && [self.user hasBiologicalSexInHealthKit])
+    {
+        return NO;
+    }
+    else if (healthKitPropertyIdentifier == HKCharacteristicTypeIdentifierDateOfBirth &&
+             self.canEditBirthDate && [self.user hasBirthDateInHealthKit])
+    {
+        return NO;
+    }
+    return YES;
 }
 
 #pragma mark - UIImagePickerControllerDelegate
@@ -1469,11 +1520,17 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
                     break;
                     
                 case kAPCUserInfoItemTypeDateOfBirth:
-                    self.user.birthDate = [(APCTableViewDatePickerItem *)item date];
+                    if (self.canEditBirthDate) // otherwise default item will be used
+                    {
+                        self.user.birthDate = [(APCTableViewDatePickerItem *)item date];
+                    }
                     break;
                     
                 case kAPCUserInfoItemTypeBiologicalSex:
-                    self.user.biologicalSex = [APCUser sexTypeForIndex:((APCTableViewSegmentItem *)item).selectedIndex];
+                    if (self.canEditBiologicalSex) // otherwise default item will be used
+                    {
+                        self.user.biologicalSex = [APCUser sexTypeForIndex:((APCTableViewSegmentItem *)item).selectedIndex];
+                    }
                     break;
                 
                 default:

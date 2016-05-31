@@ -123,4 +123,13 @@
 - (void)hasStartedEditing;
 
 - (void)hasFinishedEditing;
+
+/*
+ * If canEditBirthDate or canEditBiologicalSex are set to YES,
+ * This will be called if the user tries to edit either of them when we are
+ * loading them from HealthKit, but writing to HealthKit is not valid
+ * Dev should launch a dialog when this is called saying to change in the Health App
+ */
+- (void) editingFailedForHealthKitType:(NSString*) healthKitIdentifier;
+
 @end
