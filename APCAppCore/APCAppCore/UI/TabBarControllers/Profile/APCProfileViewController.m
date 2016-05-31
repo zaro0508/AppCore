@@ -444,18 +444,8 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
 {
     [super setEditing:isEditing];
     
-    NSArray* visibleCells = [self.tableView visibleCells];
-    for (UITableViewCell* cell in visibleCells) {
-        
-        // Segment control cells do not respond to didSelectRowAtIndex,
-        // So we need to change the editable property here, instead of blocking it in didSelectRowAtIndex
-        if ([cell isKindOfClass:[APCSegmentedTableViewCell class]])
-        {
-            NSIndexPath* indexPath = [self.tableView indexPathForCell:cell];
-            APCTableViewItem *field = [self itemForIndexPath:indexPath];
-            cell.userInteractionEnabled = field.editable && self.isEditing;
-        }
-    }
+    // Reload the table so that all the field items and cells are in the correct state for new "isEditing" property
+    [self.tableView reloadData];
 }
 
 #pragma mark - Prepare Content
@@ -540,7 +530,7 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
                         }
                         field = dateField;
                     }
-                    else // if we cant edit sex, show a simple default table view cell
+                    else // if we cant edit birthdate, show a simple default table view cell
                     {
                         field = [APCTableViewItem new];
                         field.editable = NO;
@@ -1221,7 +1211,8 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
                 
             case kAPCUserInfoItemTypeDateOfBirth:
             {
-                if (![self isEditingAllowedForHealthKitProperty:HKCharacteristicTypeIdentifierDateOfBirth])
+                if (self.canEditBirthDate &&
+                    ![self isEditingAllowedForHealthKitProperty:HKCharacteristicTypeIdentifierDateOfBirth])
                 {
                     [self showEditingNotAllowedAlertForHealthKitProperty:HKCharacteristicTypeIdentifierDateOfBirth];
                     [tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -1235,6 +1226,11 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
                 }
             }
                 break;
+                
+            case kAPCUserInfoItemTypeHeight:
+            {
+                [self setEditing:!self.isEditing];
+            }
             
             default:{
                 [super tableView:tableView didSelectRowAtIndexPath:indexPath];
@@ -1334,7 +1330,8 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
 {
     [super segmentedTableViewCell:cell didSelectSegmentAtIndex:index];
     
-    if (![self isEditingAllowedForHealthKitProperty:HKCharacteristicTypeIdentifierBiologicalSex])
+    if (self.canEditBiologicalSex &&
+        ![self isEditingAllowedForHealthKitProperty:HKCharacteristicTypeIdentifierBiologicalSex])
     {
         [self showEditingNotAllowedAlertForHealthKitProperty:HKCharacteristicTypeIdentifierBiologicalSex];
         // Revert back to whatever the index was originally
@@ -1367,12 +1364,12 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
 - (BOOL) isEditingAllowedForHealthKitProperty:(NSString*) healthKitPropertyIdentifier
 {
     if (healthKitPropertyIdentifier == HKCharacteristicTypeIdentifierBiologicalSex &&
-        self.canEditBiologicalSex && [self.user hasBiologicalSexInHealthKit])
+        [self.user hasBiologicalSexInHealthKit])
     {
         return NO;
     }
     else if (healthKitPropertyIdentifier == HKCharacteristicTypeIdentifierDateOfBirth &&
-             self.canEditBirthDate && [self.user hasBirthDateInHealthKit])
+             [self.user hasBirthDateInHealthKit])
     {
         return NO;
     }
