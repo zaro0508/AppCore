@@ -41,6 +41,7 @@ FOUNDATION_EXPORT NSString * kAPCAccountAlreadyExistsErrorMessage;
 FOUNDATION_EXPORT NSString * kAPCAccountDoesNotExistErrorMessage;
 FOUNDATION_EXPORT NSString * kAPCBadEmailAddressErrorMessage;
 FOUNDATION_EXPORT NSString * kAPCBadPasswordErrorMessage;
+FOUNDATION_EXPORT NSString * kAPCBadPasswordWithDetailsErrorMessage;
 FOUNDATION_EXPORT NSString * kAPCNotReachableErrorMessage;
 FOUNDATION_EXPORT NSString * kAPCInvalidEmailAddressOrPasswordErrorMessage;
 
