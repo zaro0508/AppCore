@@ -1211,27 +1211,33 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
                 
             case kAPCUserInfoItemTypeDateOfBirth:
             {
-                if (self.canEditBirthDate &&
-                    ![self isEditingAllowedForHealthKitProperty:HKCharacteristicTypeIdentifierDateOfBirth])
+                if (self.canEditBirthDate)
                 {
-                    [self showEditingNotAllowedAlertForHealthKitProperty:HKCharacteristicTypeIdentifierDateOfBirth];
-                    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+                    APCTableViewItem *field = [self itemForIndexPath:indexPath];
+                    // Check for if we grabbed this value from HealthKit, because if we did, it can't be edited from our app
+                    if (![self isEditingAllowedForHealthKitProperty:HKCharacteristicTypeIdentifierDateOfBirth])
+                    {
+                        [self showEditingNotAllowedAlertForHealthKitProperty:HKCharacteristicTypeIdentifierDateOfBirth];
+                        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+                    }
+                    // only allow to be selected if we are in edit mode
+                    else if (self.isEditing && field.isEditable)
+                    {
+                        [super tableView:tableView didSelectRowAtIndexPath:indexPath];
+                    }
+                    // if we cant edit it, simply deselect the row
+                    else
+                    {
+                        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+                    }
                 }
                 else
                 {
-                    APCTableViewItem *field = [self itemForIndexPath:indexPath];
-                    if (self.isEditing && field.isEditable) {
-                        [super tableView:tableView didSelectRowAtIndexPath:indexPath];
-                    }
+                    [super tableView:tableView didSelectRowAtIndexPath:indexPath];
                 }
             }
                 break;
-                
-            case kAPCUserInfoItemTypeHeight:
-            {
-                [self setEditing:!self.isEditing];
-            }
-            
+
             default:{
                 [super tableView:tableView didSelectRowAtIndexPath:indexPath];
             }
