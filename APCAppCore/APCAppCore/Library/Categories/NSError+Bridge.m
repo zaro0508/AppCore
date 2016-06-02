@@ -87,7 +87,13 @@ static NSString *kSageInvalidUsernameOrPassword  = @"Invalid username or passwor
 		}
 		else if([errors valueForKey: kSageErrorPasswordKey])
 		{
-			message = kAPCBadPasswordErrorMessage;
+            NSArray *passwordErrors = [errors valueForKey: kSageErrorPasswordKey];
+            NSString *errorsString = [passwordErrors componentsJoinedByString:@", "];
+            if (errorsString.length > 0) {
+                message = [NSString stringWithFormat:@"%@ Details: %@", kAPCBadPasswordErrorMessage, errorsString];
+            } else {
+                message = kAPCBadPasswordErrorMessage;
+            }
 		} else
 		{
 			message = kAPCInvalidEmailAddressOrPasswordErrorMessage;
