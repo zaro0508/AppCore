@@ -273,7 +273,8 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
         [[NSUserDefaults standardUserDefaults] setObject: [NSNumber numberWithLong:uptime()] forKey:kLastUsedTimeKey];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
-    self.dataSubstrate.currentUser.sessionToken = nil;
+    // Clear the in memory token while preserving the keychain version
+    self.dataSubstrate.currentUser.cachedSessionToken = nil;
     
     [self showSecureView];
 }

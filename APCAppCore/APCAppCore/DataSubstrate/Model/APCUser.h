@@ -58,7 +58,6 @@ typedef NS_ENUM(NSInteger, APCUserConsentSharingScope) {
 
 @property (nonatomic, strong, nullable) NSString * firstName DEPRECATED_ATTRIBUTE;
 @property (nonatomic, strong, nullable) NSString * lastName DEPRECATED_ATTRIBUTE;
-
 @property (nonatomic, strong, nullable) NSString * email;
 @property (nonatomic, strong, nullable) NSString * password;
 @property (nonatomic, strong, nullable) NSString * sessionToken;
@@ -98,9 +97,6 @@ typedef NS_ENUM(NSInteger, APCUserConsentSharingScope) {
 @property (nonatomic, strong, nullable) NSDate *consentSignatureDate;
 @property (nonatomic, strong, nullable) NSData *consentSignatureImage;
 
-@property (nonatomic, strong, nullable) NSDate *downloadDataStartDate; // NOT stored in CoreData
-@property (nonatomic, strong, nullable) NSDate *downloadDataEndDate; // NOT stored in CoreData
-
 @property (nonatomic, getter=isSecondaryInfoSaved) BOOL secondaryInfoSaved;
 
 /*********************************************************************************/
@@ -125,6 +121,14 @@ typedef NS_ENUM(NSInteger, APCUserConsentSharingScope) {
 @property (nonatomic, getter=isSignedIn) BOOL signedIn;
 @property (nonatomic, nullable) NSNumber * savedSharingScope;
 @property (nonatomic, nullable) NSArray <NSString *> * dataGroups;
+
+/*********************************************************************************/
+#pragma mark - Stored In Memory Only
+/*********************************************************************************/
+@property (nonatomic, strong, nullable) NSString * cachedSessionToken; // Memory Only, can nil this out and sessionToken will remain safely in keychain
+@property (nonatomic, strong, nullable) NSDate *downloadDataStartDate; // NOT stored in CoreData
+@property (nonatomic, strong, nullable) NSDate *downloadDataEndDate; // NOT stored in CoreData
+
 
 - (BOOL) isLoggedOut;
 

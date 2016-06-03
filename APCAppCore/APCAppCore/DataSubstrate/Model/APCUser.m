@@ -275,6 +275,20 @@ static NSString *const kSignedInKey = @"SignedIn";
     [APCKeychainStore setString:[self hashIfNeeded:password] forKey:kPasswordPropertyName];
 }
 
+- (NSString *)sessionToken
+{
+    if (self.cachedSessionToken == nil) {
+        self.cachedSessionToken = [APCKeychainStore stringForKey:kSessionTokenPropertyName];
+    }
+    return self.cachedSessionToken;
+}
+
+-(void)setSessionToken:(NSString *)sessionToken
+{
+    self.cachedSessionToken = sessionToken;
+    [APCKeychainStore setString:[self hashIfNeeded:sessionToken] forKey:kSessionTokenPropertyName];
+}
+
 - (NSString *)externalId
 {
     return [APCKeychainStore stringForKey:kExternalIdPropertyName];
