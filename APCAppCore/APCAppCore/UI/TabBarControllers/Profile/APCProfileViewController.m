@@ -623,78 +623,6 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
                 }
                     break;
                 
-                case kAPCUserInfoItemTypeHeight:
-                {
-
-                    APCTableViewCustomPickerItem *field = [APCTableViewCustomPickerItem new];
-                    field.caption = NSLocalizedStringWithDefaultValue(@"Height", @"APCAppCore", APCBundle(), @"Height", @"");
-                    field.reuseIdentifier = kAPCDefaultTableViewCellIdentifier;
-                    field.detailDiscloserStyle = YES;
-                    field.textAlignnment = NSTextAlignmentRight;
-                    field.pickerData = [APCUser heights];
-                    field.selectionStyle = self.isEditing ? UITableViewCellSelectionStyleGray : UITableViewCellSelectionStyleNone;
-                    field.editable = NO;
-                    
-                    NSInteger defaultIndexOfMyHeightInFeet = 5;
-                    NSInteger defaultIndexOfMyHeightInInches = 0;
-                    
-                    double usersHeight = [APCUser heightInInches:self.user.height];
-                    
-                    if (usersHeight) {
-                        double heightInInches = round(usersHeight);
-                        NSString *feet = [NSString stringWithFormat:@"%i'", (int)heightInInches/12];
-                        NSString *inches = [NSString stringWithFormat:@"%i''", (int)heightInInches%12];
-                        
-                        NSArray *allPossibleHeightsInFeet = field.pickerData [0];
-                        NSArray *allPossibleHeightsInInches = field.pickerData [1];
-                        
-                        NSInteger indexOfMyHeightInFeet = [allPossibleHeightsInFeet indexOfObject: feet];
-                        NSInteger indexOfMyHeightInInches = [allPossibleHeightsInInches indexOfObject: inches];
-                        
-                        if (indexOfMyHeightInFeet == NSNotFound) {
-                            indexOfMyHeightInFeet = defaultIndexOfMyHeightInFeet;
-                        }
-                        
-                        if (indexOfMyHeightInInches == NSNotFound) {
-                            indexOfMyHeightInInches = defaultIndexOfMyHeightInInches;
-                        }
-                        
-                        field.selectedRowIndices = @[ @(indexOfMyHeightInFeet), @(indexOfMyHeightInInches) ];
-
-                    }
-                    
-                    APCTableViewRow *row = [APCTableViewRow new];
-                    row.item = field;
-                    row.itemType = kAPCUserInfoItemTypeHeight;
-                    [rowItems addObject:row];
-                }
-                    break;
-                
-                case kAPCUserInfoItemTypeWeight:
-                {
-                    APCTableViewTextFieldItem *field = [APCTableViewTextFieldItem new];
-                    field.caption = NSLocalizedStringWithDefaultValue(@"Weight", @"APCAppCore", APCBundle(), @"Weight", @"");
-                    field.placeholder = NSLocalizedStringWithDefaultValue(@"add weight (lb)", @"APCAppCore", APCBundle(), @"add weight (lb)", @"");
-                    field.regularExpression = kAPCMedicalInfoItemWeightRegEx;
-                    
-                    double userWeight = [APCUser weightInPounds:self.user.weight];
-                    
-                    if (userWeight) {
-                        field.value = [NSString stringWithFormat:@"%.0f", userWeight];
-                    }
-                    
-                    field.keyboardType = UIKeyboardTypeDecimalPad;
-                    field.textAlignnment = NSTextAlignmentRight;
-                    field.reuseIdentifier = kAPCTextFieldTableViewCellIdentifier;
-                    field.selectionStyle = self.isEditing ? UITableViewCellSelectionStyleGray : UITableViewCellSelectionStyleNone;
-                    
-                    APCTableViewRow *row = [APCTableViewRow new];
-                    row.item = field;
-                    row.itemType = kAPCUserInfoItemTypeWeight;
-                    [rowItems addObject:row];
-                }
-                    break;
-                
                 case kAPCUserInfoItemTypeWakeUpTime:
                 {
                     APCTableViewDatePickerItem *field = [APCTableViewDatePickerItem new];
@@ -756,7 +684,13 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
                 }
                     break;
                 
-                default:
+                default:{
+                    APCTableViewRow *row = [self createTableViewRowForItemType:itemType user:self.user];
+                    if (row != nil) {
+                        [rowItems addObject:row];
+                    }
+                }
+
                     break;
             }
         }
@@ -1463,36 +1397,6 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
                 case kAPCUserInfoItemTypeMedication:
                     self.user.medications = [(APCTableViewCustomPickerItem *)item stringValue];
                     break;
-                
-                case kAPCUserInfoItemTypeHeight:
-                {
-                    APCTableViewCustomPickerItem *heightPicker = (APCTableViewCustomPickerItem *)item;
-                    double height = [APCUser heightInInchesForSelectedIndices:heightPicker.selectedRowIndices];
-                    
-                    HKUnit *inchUnit = [HKUnit inchUnit];
-                    HKQuantity *heightQuantity = [HKQuantity quantityWithUnit:inchUnit doubleValue:height];
-                    
-                    self.user.height = heightQuantity;
-                }
-                    break;
-                
-                case kAPCUserInfoItemTypeWeight:
-                {
-                    double weight = [[(APCTableViewTextFieldItem *)item value] floatValue];
-                    HKUnit *poundUnit = [HKUnit poundUnit];
-                    HKQuantity *weightQuantity = [HKQuantity quantityWithUnit:poundUnit doubleValue:weight];
-                    
-                    self.user.weight = weightQuantity;
-                }
-                    break;
-                
-                case kAPCUserInfoItemTypeSleepTime:
-                    self.user.sleepTime = [(APCTableViewDatePickerItem *)item date];
-                    break;
-                
-                case kAPCUserInfoItemTypeWakeUpTime:
-                    self.user.wakeUpTime = [(APCTableViewDatePickerItem *)item date];
-                    break;
                     
                 case kAPCUserInfoItemTypeDataGroups:
                     [self.dataGroupsManager setSurveyAnswerWithItem:item];
@@ -1537,6 +1441,7 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
                     break;
                 
                 default:
+                    [self updateUser:self.user forItem:item itemType:itemType];
                     break;
             }
         }
@@ -1758,6 +1663,12 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
     [alertContorller addAction:settings];
     
     [self.navigationController presentViewController:alertContorller animated:YES completion:nil];
+}
+
+- (void)beginEditing {
+    if (!self.isEditing) {
+        [self editFields:self.rightBarButton];
+    }
 }
 
 - (IBAction)editFields:(UIBarButtonItem *)sender

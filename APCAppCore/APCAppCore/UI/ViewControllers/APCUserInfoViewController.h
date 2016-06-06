@@ -77,4 +77,8 @@
 
 - (APCTableViewItemType)itemTypeForIndexPath:(NSIndexPath *)indexPath;
 
+- (APCTableViewRow *)createTableViewRowForItemType:(APCUserInfoItemType)itemType user:(APCUser *)user;
+
+- (void)updateUser:(APCUser *)user forItem:(APCTableViewItem *)item itemType:(APCUserInfoItemType)itemType;
+
 @end
