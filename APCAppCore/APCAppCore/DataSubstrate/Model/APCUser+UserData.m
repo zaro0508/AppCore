@@ -141,7 +141,7 @@
     // Convert the formatter unit to a HKUnit (default to centimeter)
     NSArray *hkUnits = @[[HKUnit meterUnitWithMetricPrefix:HKMetricPrefixCenti]];
     NSArray *formatterUnits = @[@(NSLengthFormatterUnitCentimeter)];
-    NSArray *maxValues = @[@(floor((8 * 12 + 11) * 25.4))];
+    NSArray *maxValues = @[@(floor((8 * 12 + 11) * 2.54))];
     NSArray *builderUnits = hkUnits;
     
     switch (formatterUnit) {
