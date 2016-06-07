@@ -722,6 +722,8 @@
 		FB4E468C1C7E6E0000CADC1F /* APCNavigationFooter.m in Sources */ = {isa = PBXBuildFile; fileRef = FB4E468A1C7E6E0000CADC1F /* APCNavigationFooter.m */; };
 		FBAE3D5E1C878064003CEC4A /* APCOptionalStepViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = FBAE3D5C1C878064003CEC4A /* APCOptionalStepViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		FBAE3D5F1C878064003CEC4A /* APCOptionalStepViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FBAE3D5D1C878064003CEC4A /* APCOptionalStepViewController.m */; };
+		FF00961B1D05F23D006258B5 /* APCPickerItemQuantity.h in Headers */ = {isa = PBXBuildFile; fileRef = FF0096191D05F23D006258B5 /* APCPickerItemQuantity.h */; };
+		FF00961C1D05F23D006258B5 /* APCPickerItemQuantity.m in Sources */ = {isa = PBXBuildFile; fileRef = FF00961A1D05F23D006258B5 /* APCPickerItemQuantity.m */; };
 		FF0B4A961C29D98C00224EF7 /* APCScene.h in Headers */ = {isa = PBXBuildFile; fileRef = FF0B4A941C29D98C00224EF7 /* APCScene.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		FF0B4A971C29D98C00224EF7 /* APCScene.m in Sources */ = {isa = PBXBuildFile; fileRef = FF0B4A951C29D98C00224EF7 /* APCScene.m */; };
 		FF44E50A1C1A3BB200F07DA9 /* BridgeSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF44E5091C1A3BB200F07DA9 /* BridgeSDK.framework */; };
@@ -1483,6 +1485,8 @@
 		FB4E468A1C7E6E0000CADC1F /* APCNavigationFooter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APCNavigationFooter.m; sourceTree = "<group>"; };
 		FBAE3D5C1C878064003CEC4A /* APCOptionalStepViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APCOptionalStepViewController.h; sourceTree = "<group>"; };
 		FBAE3D5D1C878064003CEC4A /* APCOptionalStepViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APCOptionalStepViewController.m; sourceTree = "<group>"; };
+		FF0096191D05F23D006258B5 /* APCPickerItemQuantity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APCPickerItemQuantity.h; sourceTree = "<group>"; };
+		FF00961A1D05F23D006258B5 /* APCPickerItemQuantity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APCPickerItemQuantity.m; sourceTree = "<group>"; };
 		FF0B4A941C29D98C00224EF7 /* APCScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APCScene.h; sourceTree = "<group>"; };
 		FF0B4A951C29D98C00224EF7 /* APCScene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APCScene.m; sourceTree = "<group>"; };
 		FF44E5091C1A3BB200F07DA9 /* BridgeSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BridgeSDK.framework; path = "../../../../../Library/Developer/Xcode/DerivedData/Parkinson-dphbgsbdqdzhcbeketqhdiecbfyz/Build/Products/Debug-iphoneos/BridgeSDK.framework"; sourceTree = "<group>"; };
@@ -2739,6 +2743,8 @@
 				5B04329E1A318AA2000DC9ED /* APCSignInTask.m */,
 				F5F129411A2F78490015982C /* APCTableViewItem.h */,
 				F5F129421A2F78490015982C /* APCTableViewItem.m */,
+				FF0096191D05F23D006258B5 /* APCPickerItemQuantity.h */,
+				FF00961A1D05F23D006258B5 /* APCPickerItemQuantity.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -3261,6 +3267,7 @@
 				5B9B36A71A95D9C900389F42 /* APCActivitiesBasicTableViewCell.h in Headers */,
 				3650C65B1AA29BB50075C935 /* APCCatastrophicErrorViewController.h in Headers */,
 				7B751D571B0A61A600E77BD2 /* NSDictionary+APCStringify.h in Headers */,
+				FF00961B1D05F23D006258B5 /* APCPickerItemQuantity.h in Headers */,
 				F5B9480C1A73272C0034C522 /* APCScheduleExpressionTokenizer.h in Headers */,
 				F5F12A851A2F78490015982C /* APCOnboarding.h in Headers */,
 				369E27F31A96B7A200D35DFA /* APCMedicationLozenge.h in Headers */,
@@ -3665,6 +3672,7 @@
 				F5F12AE11A2F78490015982C /* APCSwitchTableViewCell.m in Sources */,
 				F5B946351A7309A20034C522 /* ZZError.m in Sources */,
 				5BE106F11A9EE2D900CA5A07 /* APCDashboardGraphTableViewCell.m in Sources */,
+				FF00961C1D05F23D006258B5 /* APCPickerItemQuantity.m in Sources */,
 				CFFDEDF31A95734000B25581 /* APCMedicationSummaryTableViewCell.m in Sources */,
 				7B8DBEC51AA1871D007B4026 /* APCVerticalThinLineView.m in Sources */,
 				5B0432A01A318AA2000DC9ED /* APCSignInTask.m in Sources */,

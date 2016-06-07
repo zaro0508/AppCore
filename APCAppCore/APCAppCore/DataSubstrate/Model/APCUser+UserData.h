@@ -33,6 +33,8 @@
  
 #import "APCUser.h"
 
+@class APCPickerItemQuantity;
+
 @interface APCUser (UserData)
 
 /* Biologcal Sex */
@@ -58,9 +60,8 @@
 + (NSArray *) medications;
 
 /* Height */
-+ (NSArray *) heights;
-
-+ (double)heightInInchesForSelectedIndices:(NSArray *)selectedIndices;
++ (NSArray *) heights __attribute__((deprecated("Please use -localizedHeightPickerDataAndSelectedIndices:")));
++ (double)heightInInchesForSelectedIndices:(NSArray *)selectedIndices __attribute__((deprecated("Please use -setHeightForPickerData:selectedIndices:")));
 
 + (double)heightInInches:(HKQuantity *)height;
 
@@ -70,5 +71,9 @@
 + (double)weightInPounds:(HKQuantity *)weight;
 
 + (double)weightInKilograms:(HKQuantity *)weight;
+
+- (NSArray <APCPickerItemQuantity *> *)localizedHeightPickerDataAndSelectedIndices:(NSArray <NSNumber *> **)selectedIndices;
+- (void)setHeightForPickerData:(NSArray *)pickerData selectedIndices:(NSArray *)selectedIndices;
+
 
 @end

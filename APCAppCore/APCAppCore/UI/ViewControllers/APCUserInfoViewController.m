@@ -36,6 +36,7 @@
 #import "NSDate+Helper.h"
 #import "UIColor+APCAppearance.h"
 #import "UIFont+APCAppearance.h"
+#import "APCLocalization.h"
 
 
 static CGFloat const kPickerCellHeight = 164.0f;
@@ -72,6 +73,10 @@ static CGFloat const kPickerCellHeight = 164.0f;
 - (void)setupBasicCellAppearance:(UITableViewCell *)cell
 {
     [cell.textLabel setFont:[UIFont appRegularFontWithSize:17.0f]];
+}
+
+- (void)beginEditing {
+    // DO nothing. Overrideable by subclass.
 }
 
 #pragma mark - UITableViewDataSource methods
@@ -436,7 +441,11 @@ static CGFloat const kPickerCellHeight = 164.0f;
 {
     if (self.isPickerShowing && (self.pickerIndexPath.row - 1 == indexPath.row) && (indexPath.section == self.pickerIndexPath.section)) {
         [self hidePickerCell];
-    } else{
+    }
+    else {
+        // Ensure that the view controller is editing before selecting index path
+        [self beginEditing];
+        
         NSIndexPath *selectedIndexpath = [self actualSelectedIndexPath:indexPath];
         
         if (self.isPickerShowing) {
@@ -505,6 +514,132 @@ static CGFloat const kPickerCellHeight = 164.0f;
     APCTableViewRow *itemRow = itemSection.rows[actualIndexPath.row];
     
     return itemRow.itemType;
+}
+
+- (APCTableViewRow *)createTableViewRowForItemType:(APCUserInfoItemType)itemType user:(APCUser *)user {
+    switch (itemType) {
+        
+        case kAPCUserInfoItemTypeHeight: {
+
+            APCTableViewCustomPickerItem *field = [APCTableViewCustomPickerItem new];
+            field.caption = NSLocalizedStringWithDefaultValue(@"Height", @"APCAppCore", APCBundle(), @"Height", @"");
+            field.reuseIdentifier = kAPCDefaultTableViewCellIdentifier;
+            field.selectionStyle = UITableViewCellSelectionStyleGray;
+            field.detailDiscloserStyle = YES;
+            field.textAlignnment = NSTextAlignmentRight;
+            
+            NSArray *selectedIndices;
+            field.pickerData = [user localizedHeightPickerDataAndSelectedIndices:&selectedIndices];
+            if (selectedIndices) {
+                field.selectedRowIndices = selectedIndices;
+            }
+
+            APCTableViewRow *row = [APCTableViewRow new];
+            row.item = field;
+            row.itemType = kAPCUserInfoItemTypeHeight;
+            return row;
+        }
+            
+        case kAPCUserInfoItemTypeWeight:
+        {
+            APCTableViewTextFieldItem *field = [APCTableViewTextFieldItem new];
+            field.caption = NSLocalizedStringWithDefaultValue(@"Weight", @"APCAppCore", APCBundle(), @"Weight", @"");
+            field.style = UITableViewCellStyleValue1;
+            field.reuseIdentifier = kAPCTextFieldTableViewCellIdentifier;
+            field.regularExpression = kAPCMedicalInfoItemWeightRegEx;
+            field.keyboardType = UIKeyboardTypeDecimalPad;
+            field.textAlignnment = NSTextAlignmentRight;
+            
+            // Find the appropriate localized unit
+            NSMassFormatterUnit formatterUnit;
+            NSMassFormatter *formatter = [[NSMassFormatter alloc] init];
+            formatter.unitStyle = NSFormattingUnitStyleMedium;
+            formatter.forPersonMassUse = YES;
+            NSString *desiredUnit = [formatter unitStringFromKilograms:0 usedUnit:&formatterUnit];
+            
+            // Convert the formatter unit to a HKUnit
+            switch (formatterUnit) {
+                case NSMassFormatterUnitOunce:
+                    field.unit = [HKUnit ounceUnit]; break;
+                case NSMassFormatterUnitPound:
+                    field.unit = [HKUnit poundUnit];
+                    formatter.numberFormatter.maximumFractionDigits = 0;
+                    break;
+                case NSMassFormatterUnitStone:
+                    field.unit = [HKUnit stoneUnit]; break;
+                case NSMassFormatterUnitGram:
+                    field.unit = [HKUnit gramUnit]; break;
+                case NSMassFormatterUnitKilogram:
+                    field.unit = [HKUnit gramUnitWithMetricPrefix:HKMetricPrefixKilo];
+                    formatter.numberFormatter.maximumFractionDigits = 1;
+                    break;
+            }
+            
+            if (user.weight) {
+                field.value = [formatter stringFromKilograms:[user.weight doubleValueForUnit:[HKUnit gramUnitWithMetricPrefix:HKMetricPrefixKilo]]];
+            }
+            
+            NSString *placeholderFormat = NSLocalizedStringWithDefaultValue(@"add weight (%@)", @"APCAppCore", APCBundle(), @"add weight (%@)", @"");
+            field.placeholder = [NSString stringWithFormat:placeholderFormat, desiredUnit];
+            
+            APCTableViewRow *row = [APCTableViewRow new];
+            row.item = field;
+            row.itemType = kAPCUserInfoItemTypeWeight;
+            return row;
+        }
+            
+        default: {
+            return nil;
+        }
+    }
+}
+
+- (void)updateUser:(APCUser *)user forItem:(APCTableViewItem *)item itemType:(APCUserInfoItemType)itemType {
+
+    switch (itemType) {
+            
+        case kAPCUserInfoItemTypeHeight:
+        {
+            APCTableViewCustomPickerItem *pickerItem = (APCTableViewCustomPickerItem *)item;
+            [user setHeightForPickerData:pickerItem.pickerData selectedIndices:pickerItem.selectedRowIndices];
+        }
+            break;
+            
+        case kAPCUserInfoItemTypeWeight:
+        {
+            APCTableViewTextFieldItem *textItem = (APCTableViewTextFieldItem *)item;
+            NSMutableCharacterSet *numberSet = [[NSCharacterSet decimalDigitCharacterSet] mutableCopy];
+            [numberSet addCharactersInString:@".,"];
+            NSRange range = [textItem.value rangeOfCharacterFromSet:numberSet options:NSBackwardsSearch];
+            if (range.location != NSNotFound) {
+                NSString *textValue = [textItem.value substringToIndex:range.location+1];
+                NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
+                double weight = [[formatter numberFromString:textValue] doubleValue];
+                HKUnit *unit = textItem.unit;
+                if (range.location+1 < textItem.value.length) {
+                    HKUnit *returnedUnit = [HKUnit unitFromString:[textItem.value substringFromIndex:range.location+1 ]];
+                    if ((returnedUnit != nil) && ![returnedUnit isEqual:unit] &&
+                        [[HKQuantity quantityWithUnit:unit doubleValue:1] isCompatibleWithUnit:returnedUnit]) {
+                        unit = returnedUnit;
+                    }
+                }
+                user.weight = [HKQuantity quantityWithUnit:unit doubleValue:weight];
+            }
+        }
+            break;
+            
+        case kAPCUserInfoItemTypeSleepTime:
+            user.sleepTime = [(APCTableViewDatePickerItem *)item date];
+            break;
+            
+        case kAPCUserInfoItemTypeWakeUpTime:
+            user.wakeUpTime = [(APCTableViewDatePickerItem *)item date];
+            break;
+            
+        default:
+            break;
+    }
+
 }
 
 @end

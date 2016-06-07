@@ -113,7 +113,7 @@ NSString * const kAPCPickerTableViewCellIdentifier = @"APCPickerTableViewCell";
               titleForRow: (NSInteger) row
              forComponent: (NSInteger) component
 {
-    return self.pickerValues[component][row];
+    return [self.pickerValues[component][row] description];
 }
 
 #pragma mark - UIPickerViewDelegate Methods

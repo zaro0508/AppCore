@@ -101,7 +101,7 @@
             
             NSInteger selectedRowInComponent = [self.selectedRowIndices[i] integerValue];
             
-            [string appendString:component[selectedRowInComponent]];
+            [string appendString:[component[selectedRowInComponent] description]];
             
             if (i < (self.pickerData.count - 1)) {
                 [string appendString:@" "];

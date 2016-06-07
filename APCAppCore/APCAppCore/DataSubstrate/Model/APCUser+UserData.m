@@ -33,6 +33,7 @@
  
 #import "APCUser+UserData.h"
 #import "APCLocalization.h"
+#import "APCPickerItemQuantity.h"
 
 @implementation APCUser (UserData)
 
@@ -127,6 +128,91 @@
 /*******
  Height
  *******/
+
+- (NSArray <APCPickerItemQuantity *> *)localizedHeightPickerDataAndSelectedIndices:(NSArray <NSNumber *> **)selectedIndices
+{
+    // Find the appropriate localized unit
+    NSLengthFormatterUnit formatterUnit;
+    NSLengthFormatter *formatter = [[NSLengthFormatter alloc] init];
+    formatter.unitStyle = NSFormattingUnitStyleMedium;
+    formatter.forPersonHeightUse = YES;
+    [formatter unitStringFromMeters:2.0 usedUnit:&formatterUnit];
+    
+    // Convert the formatter unit to a HKUnit (default to centimeter)
+    NSArray *hkUnits = @[[HKUnit meterUnitWithMetricPrefix:HKMetricPrefixCenti]];
+    NSArray *formatterUnits = @[@(NSLengthFormatterUnitCentimeter)];
+    NSArray *maxValues = @[@(floor((8 * 12 + 11) * 2.54))];
+    NSArray *builderUnits = hkUnits;
+    
+    switch (formatterUnit) {
+        case NSLengthFormatterUnitInch:
+        case NSLengthFormatterUnitFoot:
+        case NSLengthFormatterUnitYard:
+            hkUnits = @[[HKUnit footUnit], [HKUnit inchUnit]];
+            formatterUnits = @[@(NSLengthFormatterUnitFoot), @(NSLengthFormatterUnitInch)];
+            maxValues = @[@(8), @(11)];
+            builderUnits = hkUnits;
+            formatter.unitStyle = NSFormattingUnitStyleShort;
+            break;
+            
+        case NSLengthFormatterUnitCentimeter:
+            break;
+            
+        default:
+            hkUnits = @[[HKUnit meterUnit]];
+            formatterUnits = @[@(NSLengthFormatterUnitMeter)];
+            break;
+    }
+
+    NSMutableArray *heights = [NSMutableArray new];
+    NSMutableArray *currentIndices = self.height != nil ?  [NSMutableArray new] : nil;
+    
+    for (NSUInteger ii=0; ii < maxValues.count; ii++) {
+        
+        NSMutableArray *columnData = [NSMutableArray new];
+        NSUInteger maxValue = [maxValues[ii] unsignedIntegerValue];
+        HKUnit *builderUnit = builderUnits[ii];
+        double height = [self.height doubleValueForUnit:builderUnit];
+        for (NSUInteger jj=0; jj < ii; jj++) {
+            HKQuantity *unitQuantity = [HKQuantity quantityWithUnit:builderUnits[jj] doubleValue:1.0];
+            height -= [currentIndices[jj] doubleValue] * [unitQuantity doubleValueForUnit:builderUnit];
+        }
+        BOOL isLast = (ii == maxValues.count - 1);
+        NSUInteger current = MIN(maxValue, isLast ? round(height) : floor(height));
+        [currentIndices addObject:@(current)];
+        
+        for (NSUInteger nn=0; nn <= maxValue; nn++) {
+            HKQuantity *quantity = [HKQuantity quantityWithUnit:builderUnit doubleValue:(double)nn];
+            double value = [quantity doubleValueForUnit:hkUnits[ii]];
+            NSString *text = [formatter stringFromValue:value unit:[formatterUnits[ii] integerValue]];
+            APCPickerItemQuantity *pickerData = [[APCPickerItemQuantity alloc] initWithQuantity:quantity text:text];
+            [columnData addObject:pickerData];
+        }
+        
+        [heights addObject:[columnData copy]];
+    }
+    
+    if (currentIndices != nil && selectedIndices != nil) {
+        *selectedIndices = [currentIndices copy];
+    }
+    
+    return [heights copy];
+}
+
+- (void)setHeightForPickerData:(NSArray *)pickerData selectedIndices:(NSArray *)selectedIndices {
+    double value = 0;
+    HKUnit *unit = [HKUnit meterUnit];
+    for (NSInteger ii=selectedIndices.count - 1; ii >= 0; ii--) {
+        NSUInteger idx = [selectedIndices[ii] unsignedIntegerValue];
+        NSArray *columnData = pickerData[ii];
+        APCPickerItemQuantity *item = columnData[idx];
+        value += [item.quantity doubleValueForUnit:unit];
+    }
+    if (value > 0) {
+        self.height = [HKQuantity quantityWithUnit:unit doubleValue:value];
+    }
+}
+
 + (NSArray *) heights {
     return @[
              @[@"0'", @"1'", @"2'", @"3'", @"4'", @"5'", @"6'", @"7'", @"8'"],

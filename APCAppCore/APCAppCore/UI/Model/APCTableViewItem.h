@@ -85,6 +85,10 @@
 
 @property (nonatomic, copy) NSString *value;
 
+@property (nonatomic, copy) HKUnit *unit;
+
+- (HKQuantity *)quantity;
+
 @end
 
 

@@ -176,72 +176,6 @@
             }
                 break;
                 
-            case kAPCUserInfoItemTypeHeight:
-            {
-                APCTableViewCustomPickerItem *field = [APCTableViewCustomPickerItem new];
-                field.caption = NSLocalizedStringWithDefaultValue(@"Height", @"APCAppCore", APCBundle(), @"Height", @"");
-                field.reuseIdentifier = kAPCDefaultTableViewCellIdentifier;
-                field.selectionStyle = UITableViewCellSelectionStyleGray;
-                field.detailDiscloserStyle = YES;
-                field.textAlignnment = NSTextAlignmentRight;
-                field.pickerData = [APCUser heights];
-
-                NSInteger indexOfMyHeightInFeet = 0;
-                NSInteger indexOfMyHeightInInches = 0;
-
-                if (self.user.height) {
-                    double heightInInches = round([APCUser heightInInches:self.user.height]);
-                    
-                    NSString *feet = [NSString stringWithFormat:@"%d'", (int)heightInInches/12];
-                    NSString *inches = [NSString stringWithFormat:@"%d''", (int)heightInInches%12];
-
-                    NSArray *allPossibleHeightsInFeet = field.pickerData [0];
-                    NSArray *allPossibleHeightsInInches = field.pickerData [1];
-
-                    //107 inches i.e. 8'11" is the max. height.
-                    if (heightInInches <= 107) {
-                        indexOfMyHeightInFeet = [allPossibleHeightsInFeet indexOfObject: feet];
-                        indexOfMyHeightInInches = [allPossibleHeightsInInches indexOfObject: inches];
-                    } else {
-                        indexOfMyHeightInFeet = allPossibleHeightsInFeet.count-1;
-                        indexOfMyHeightInInches = allPossibleHeightsInInches.count-1;
-                    }
-                    
-                }
-
-                if (indexOfMyHeightInFeet && indexOfMyHeightInInches) {
-                    field.selectedRowIndices = @[ @(indexOfMyHeightInFeet), @(indexOfMyHeightInInches) ];
-                }
-
-                APCTableViewRow *row = [APCTableViewRow new];
-                row.item = field;
-                row.itemType = kAPCUserInfoItemTypeHeight;
-                [rowItems addObject:row];
-            }
-                break;
-                
-            case kAPCUserInfoItemTypeWeight:
-            {
-                APCTableViewTextFieldItem *field = [APCTableViewTextFieldItem new];
-                field.caption = NSLocalizedStringWithDefaultValue(@"Weight", @"APCAppCore", APCBundle(), @"Weight", @"");
-                field.placeholder = NSLocalizedStringWithDefaultValue(@"add weight (lb)", @"APCAppCore", APCBundle(), @"add weight (lb)", @"");
-                field.style = UITableViewCellStyleValue1;
-                field.reuseIdentifier = kAPCTextFieldTableViewCellIdentifier;
-                field.regularExpression = kAPCMedicalInfoItemWeightRegEx;
-                field.keyboardType = UIKeyboardTypeDecimalPad;
-                field.textAlignnment = NSTextAlignmentRight;
-                
-                if (self.user.weight) {
-                    field.value = [NSString stringWithFormat:@"%.0f", [APCUser weightInPounds:self.user.weight]];
-                }
-                
-                APCTableViewRow *row = [APCTableViewRow new];
-                row.item = field;
-                row.itemType = kAPCUserInfoItemTypeWeight;
-                [rowItems addObject:row];
-            }
-                break;
-                
             case kAPCUserInfoItemTypeWakeUpTime:
             {
                 APCTableViewDatePickerItem *field = [APCTableViewDatePickerItem new];
@@ -301,7 +235,12 @@
             }
                 break;
                 
-            default:
+            default: {
+                APCTableViewRow *row = [self createTableViewRowForItemType:itemType user:self.user];
+                if (row != nil) {
+                    [rowItems addObject:row];
+                }
+            }
                 break;
         }
     }
@@ -351,44 +290,8 @@
                     self.user.medications = [(APCTableViewCustomPickerItem *)item stringValue];
                     break;
                     
-                case kAPCUserInfoItemTypeHeight:
-                {
-                    double height = [APCUser heightInInchesForSelectedIndices:[(APCTableViewCustomPickerItem *)item selectedRowIndices]];
-                    
-                    if (height > 0) {
-                        HKUnit *inchUnit = [HKUnit inchUnit];
-                        HKQuantity *heightQuantity = [HKQuantity quantityWithUnit:inchUnit doubleValue:height];
-                        
-                        self.user.height = heightQuantity;
-                    }
-                }
-                    
-                    break;
-                    
-                case kAPCUserInfoItemTypeWeight:
-                {
-                    double weight = [[(APCTableViewTextFieldItem *)item value] floatValue];
-                    
-                    if (weight > 0) {
-                        HKUnit *poundUnit = [HKUnit poundUnit];
-                        HKQuantity *weightQuantity = [HKQuantity quantityWithUnit:poundUnit doubleValue:weight];
-                        
-                        self.user.weight = weightQuantity;
-                    }
-                }
-                    break;
-                    
-                case kAPCUserInfoItemTypeSleepTime:
-                    self.user.sleepTime = [(APCTableViewDatePickerItem *)item date];
-                    break;
-                    
-                case kAPCUserInfoItemTypeWakeUpTime:
-                    self.user.wakeUpTime = [(APCTableViewDatePickerItem *)item date];
-                    break;
-                    
                 default:
-                    //#warning ASSERT_MESSAGE Require
-                    NSAssert(itemType <= kAPCUserInfoItemTypeWakeUpTime, @"ASSER_MESSAGE");
+                    [self updateUser:self.user forItem:item itemType:itemType];
                     break;
             }
         }
