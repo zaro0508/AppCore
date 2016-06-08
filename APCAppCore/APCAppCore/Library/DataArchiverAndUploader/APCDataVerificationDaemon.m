@@ -114,7 +114,7 @@ static const NSUInteger kCallDelay = 5;
     NSMutableDictionary *headers = [NSMutableDictionary new];
     [[SBBAuthManager defaultComponent] addAuthHeaderToHeaders:headers];
     
-    [sharedManager get:url.absoluteString headers:headers parameters:@{@"study":gSBBAppStudy} completion:^(NSURLSessionDataTask *__unused task, id responseObject, NSError *error) {
+    [sharedManager get:url.absoluteString headers:headers parameters:@{@"study":gSBBAppStudy} completion:^(NSURLSessionTask *__unused task, id responseObject, NSError *error) {
         if (responseObject) {
             NSDictionary *responseDictionary = (NSDictionary *)responseObject;
             NSString *responseString = [NSString stringWithFormat:@"\nAPCDataVerificationDaemon verified upload of uploadID: %@. Status : %@\n", [responseDictionary objectForKey:@"id"], [responseDictionary objectForKey:@"status"]];

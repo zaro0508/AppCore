@@ -128,7 +128,7 @@
                 __weak typeof(self) weakSelf = self;
                 
                 [SBBComponent(SBBAuthManager) requestPasswordResetForEmail: emailAddress
-                                                                completion: ^(NSURLSessionDataTask * __unused task,
+                                                                completion: ^(NSURLSessionTask * __unused task,
                                                                               id __unused responseObject,
                                                                               NSError *error) {
 

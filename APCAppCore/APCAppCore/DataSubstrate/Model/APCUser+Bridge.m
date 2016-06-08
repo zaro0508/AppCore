@@ -79,7 +79,7 @@ static NSString* const kBaseEmailAddressForExternalIdKey = @"baseEmailAddressFor
                                              username: self.email
                                              password: self.password
                                            dataGroups:dataGroups
-                                           completion: ^(NSURLSessionDataTask * __unused task,
+                                           completion: ^(NSURLSessionTask * __unused task,
                                                          id __unused responseObject,
                                                          NSError *error)
          {
@@ -356,7 +356,7 @@ static NSString* const kBaseEmailAddressForExternalIdKey = @"baseEmailAddressFor
         NSParameterAssert(self.password);
         [SBBComponent(SBBAuthManager) signInWithEmail: self.email
                                              password: self.password
-                                           completion: ^(NSURLSessionDataTask * __unused task,
+                                           completion: ^(NSURLSessionTask * __unused task,
                                                          id responseObject,
                                                          NSError *signInError)
          {
@@ -443,7 +443,7 @@ static NSString* const kBaseEmailAddressForExternalIdKey = @"baseEmailAddressFor
     else
     {
         NSParameterAssert(self.password);
-        [SBBComponent(SBBAuthManager) signOutWithCompletion: ^(NSURLSessionDataTask * __unused task,
+        [SBBComponent(SBBAuthManager) signOutWithCompletion: ^(NSURLSessionTask * __unused task,
                                                                id __unused responseObject,
                                                                NSError *error)
          {
@@ -545,7 +545,7 @@ static NSString* const kBaseEmailAddressForExternalIdKey = @"baseEmailAddressFor
     else
     {
         if (self.email.length > 0) {
-            [SBBComponent(SBBAuthManager) resendEmailVerification:self.email completion: ^(NSURLSessionDataTask * __unused task,
+            [SBBComponent(SBBAuthManager) resendEmailVerification:self.email completion: ^(NSURLSessionTask * __unused task,
                                                                                            id __unused responseObject,
                                                                                            NSError *error)
 			 {
