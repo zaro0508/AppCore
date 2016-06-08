@@ -213,7 +213,7 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
 #ifndef DEVELOPMENT
     if (self.dataSubstrate.currentUser.signedIn) {
         if (self.dataSubstrate.currentUser.isConsented) {
-            [SBBComponent(SBBAuthManager) ensureSignedInWithCompletion: ^(NSURLSessionDataTask * __unused task,
+            [SBBComponent(SBBAuthManager) ensureSignedInWithCompletion: ^(NSURLSessionTask * __unused task,
                                                                           id  __unused responseObject,
                                                                           NSError *error) {
                 APCLogError2 (error);
