@@ -85,6 +85,12 @@
  */
 @property (nonatomic) BOOL canEditBiologicalSex;
 
+/*
+ * If set to YES, name text field can be edited by the user when isEditing 
+ * If set to NO, name will not be enabled
+ */
+@property (nonatomic) BOOL canEditUsersName;
+
 
 - (IBAction)leaveStudy:(id)sender;
 

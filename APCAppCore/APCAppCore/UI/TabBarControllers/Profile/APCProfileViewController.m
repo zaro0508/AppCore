@@ -153,7 +153,7 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
         self.nameTextField.delegate = self;
         
         self.nameTextField.text = (self.user.name != nil) ? self.user.name : @"";
-        self.nameTextField.enabled = NO;
+        self.nameTextField.enabled = self.canEditUsersName;
         
         self.emailTextField.text = self.user.email;
         self.emailTextField.enabled = NO;
