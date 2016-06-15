@@ -617,10 +617,15 @@ static CGFloat const kPickerCellHeight = 164.0f;
                 double weight = [[formatter numberFromString:textValue] doubleValue];
                 HKUnit *unit = textItem.unit;
                 if (range.location+1 < textItem.value.length) {
-                    HKUnit *returnedUnit = [HKUnit unitFromString:[textItem.value substringFromIndex:range.location+1 ]];
-                    if ((returnedUnit != nil) && ![returnedUnit isEqual:unit] &&
-                        [[HKQuantity quantityWithUnit:unit doubleValue:1] isCompatibleWithUnit:returnedUnit]) {
-                        unit = returnedUnit;
+                    @try {
+                        NSString *unitString = [[textItem.value substringFromIndex:range.location+1] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                        HKUnit *returnedUnit = [HKUnit unitFromString:unitString];
+                        if ((returnedUnit != nil) && ![returnedUnit isEqual:unit] &&
+                            [[HKQuantity quantityWithUnit:unit doubleValue:1] isCompatibleWithUnit:returnedUnit]) {
+                            unit = returnedUnit;
+                        }
+                    } @catch (NSException *exception) {
+                        APCLogException(exception);
                     }
                 }
                 user.weight = [HKQuantity quantityWithUnit:unit doubleValue:weight];
