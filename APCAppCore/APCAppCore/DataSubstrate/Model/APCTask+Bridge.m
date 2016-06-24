@@ -112,7 +112,6 @@
             {
                 SBBSurvey * sbbSurvey = (SBBSurvey*) survey;
                 [self.managedObjectContext performBlockAndWait:^{
-                    self.taskTitle = sbbSurvey.name;
                     self.taskVersionName = sbbSurvey.guid;
                     self.taskVersionDate = sbbSurvey.createdOn;
                     self.taskSchemaRevision = sbbSurvey.schemaRevision;
