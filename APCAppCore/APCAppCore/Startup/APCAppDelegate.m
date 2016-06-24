@@ -1246,17 +1246,21 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
     UIViewController * vc =  [[UIViewController alloc] init];
     vc.view.backgroundColor = [UIColor whiteColor];
     appDelegate.window.rootViewController = vc;
-    
-    // Clear all user info, in case they log in or sign up as a different user afterwards
-    [appDelegate clearNSUserDefaults];
-    [APCKeychainStore resetKeyChain];
-    [appDelegate.dataSubstrate resetCoreData];
-    
+
     // This is all that is needed to force the re-registration of the PIN
     APCUser* user = [((id<APCOnboardingManagerProvider>)appDelegate) onboardingManager].user;
     user.secondaryInfoSaved = NO;
     
     [self logOutAndGoToSignIn];
+}
+
+- (void) clearPreviousUserData
+{
+    // Clear all user info, in case they log in or sign up as a different user afterwards
+    APCAppDelegate * appDelegate = (APCAppDelegate*) [UIApplication sharedApplication].delegate;
+    [appDelegate clearNSUserDefaults];
+    [APCKeychainStore resetKeyChain];
+    [appDelegate.dataSubstrate resetCoreData];
 }
 
 @end

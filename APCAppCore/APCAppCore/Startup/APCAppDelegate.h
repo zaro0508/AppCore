@@ -152,4 +152,6 @@ extern NSString *const kNewsFeedStoryBoardKey;
  */
 - (void) resetAppAndProceedToSignIn;
 
+- (void) clearPreviousUserData;
+
 @end

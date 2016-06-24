@@ -177,9 +177,14 @@ static NSString * const kServerInvalidEmailErrorString = @"Invalid username or p
     
         APCUser * user = [self user];
         
-        user.email = self.userHandleTextField.text;
+        if (user.email != nil && ![user.email isEqualToString:self.userHandleTextField.text] ) {
+            // Trying to log in as a different user, so clear cached data from the previously logged in user
+            [((APCAppDelegate*)[UIApplication sharedApplication].delegate) clearPreviousUserData];
+        }
         
+        user.email = self.userHandleTextField.text;
         user.password = self.passwordTextField.text;
+        
         [user signInOnCompletion:^(NSError *error) {
             if (error) {
                 [spinnerController dismissViewControllerAnimated:YES completion:^{
