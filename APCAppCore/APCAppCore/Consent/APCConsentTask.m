@@ -202,6 +202,7 @@ static NSString*    kStepIdentifierSuffixStart          = @"+X";
                                                                                 inDocument:_consentDocument];
     
     reviewStep.reasonForConsent = reason;
+    reviewStep.title = NSLocalizedStringWithDefaultValue(@"Name", @"APCAppCore", APCBundle(), @"Name", nil); // Title of page where it asks for first and last name
     
     NSMutableArray* consentSteps = [[NSMutableArray alloc] init];
     [consentSteps addObject:_visualStep];
