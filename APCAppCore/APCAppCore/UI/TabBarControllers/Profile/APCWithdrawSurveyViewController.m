@@ -269,12 +269,17 @@
         }
         else {
             [spinnerController dismissViewControllerAnimated:NO completion:^{
-                APCWithdrawCompleteViewController *viewController = [[UIStoryboard storyboardWithName:@"APCProfile" bundle:[NSBundle appleCoreBundle]] instantiateViewControllerWithIdentifier:@"APCWithdrawCompleteViewController"];
-                UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:viewController];
-                [weakSelf.navigationController presentViewController:navController animated:YES completion:nil];
+                [weakSelf showWithdrawCompleteViewController];
             }];
         }
     }];
+}
+
+- (void) showWithdrawCompleteViewController
+{
+    APCWithdrawCompleteViewController *viewController = [[UIStoryboard storyboardWithName:@"APCProfile" bundle:[NSBundle appleCoreBundle]] instantiateViewControllerWithIdentifier:@"APCWithdrawCompleteViewController"];
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:viewController];
+    [self.navigationController presentViewController:navController animated:YES completion:nil];
 }
 
 - (IBAction)cancel:(id) __unused sender

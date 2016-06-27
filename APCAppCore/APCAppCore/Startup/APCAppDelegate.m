@@ -758,13 +758,12 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
     [self.tasksReminder updateTasksReminder];
 }
 
-- (void) logOutAndGoToSignIn
+- (void)logoutData
 {
     self.dataSubstrate.currentUser.signedUp = NO;
     self.dataSubstrate.currentUser.signedIn = NO;
     [APCKeychainStore removeValueForKey:kPasswordKey];
     [self.tasksReminder updateTasksReminder];
-    [self showOnBoardingAndThenSignIn];
 }
 
 - (void) showOnBoardingAndThenSignIn
@@ -1240,7 +1239,21 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
 
 #pragma mark - Reset Methods
 
+- (void) resetAppAndProceedToOnboarding
+{
+    [self clearUserInfo];
+    [self logoutData];
+    [self showOnBoarding];
+}
+
 - (void) resetAppAndProceedToSignIn
+{
+    [self clearUserInfo];
+    [self logoutData];
+    [self showOnBoardingAndThenSignIn];
+}
+
+- (void) clearUserInfo
 {
     APCAppDelegate * appDelegate = (APCAppDelegate*) [UIApplication sharedApplication].delegate;
     UIViewController * vc =  [[UIViewController alloc] init];
@@ -1250,8 +1263,6 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
     // This is all that is needed to force the re-registration of the PIN
     APCUser* user = [((id<APCOnboardingManagerProvider>)appDelegate) onboardingManager].user;
     user.secondaryInfoSaved = NO;
-    
-    [self logOutAndGoToSignIn];
 }
 
 - (void) clearPreviousUserData
