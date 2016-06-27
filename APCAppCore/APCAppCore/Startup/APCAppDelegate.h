@@ -151,6 +151,7 @@ extern NSString *const kNewsFeedStoryBoardKey;
  * Otherwise, post a "APCUserForgotPasscodeNotification" notification and the alert will be shown for you
  */
 - (void) resetAppAndProceedToSignIn;
+- (void) resetAppAndProceedToOnboarding;
 
 - (void) clearPreviousUserData;
 
