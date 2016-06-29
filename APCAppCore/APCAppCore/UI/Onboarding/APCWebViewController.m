@@ -79,6 +79,11 @@
 
 - (void)webViewDidFinishLoad:(UIWebView *)__unused webView
 {
+    if (self.javascriptCallOnLoad != nil) {
+        // Some windows might to make a javascript call when loaded. For example, to
+        // validate with the sessionToken in order to load the webpage.
+        [self.webView stringByEvaluatingJavaScriptFromString:self.javascriptCallOnLoad];
+    }
     [self updateToolbarButtons];
 }
 
