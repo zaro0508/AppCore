@@ -39,6 +39,7 @@
 @property (weak, nonatomic) IBOutlet UIToolbar *webToolBar;
 
 @property (nonatomic, strong) NSString *link;
+@property (nonatomic, strong) NSString *javascriptCallOnLoad;
 
 - (IBAction)close:(id)sender;
 
