@@ -87,8 +87,6 @@
 
 @property (nonatomic, copy) HKUnit *unit;
 
-- (HKQuantity *)quantity;
-
 @end
 
 
