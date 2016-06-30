@@ -41,6 +41,7 @@
 /*********************************************************************************/
 #import "APCUser+UserData.h"
 #import "APCUser+Bridge.h"
+#import "APCDateRange.h"
 
 /*********************************************************************************/
 #pragma mark - Core Data Model Objects
