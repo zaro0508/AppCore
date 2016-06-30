@@ -42,7 +42,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) HKQuantity *quantity;
 @property (nonatomic, readonly) NSString *text;
 
-- (instancetype)initWithQuantity:(HKQuantity *)quantity text:(NSString *)text NS_DESIGNATED_INITIALIZER; 
+- (instancetype)init NS_UNAVAILABLE;
++ (instancetype)new NS_UNAVAILABLE;
+
+- (instancetype)initWithQuantity:(HKQuantity *)quantity text:(NSString *)text NS_DESIGNATED_INITIALIZER;
 
 @end
 
