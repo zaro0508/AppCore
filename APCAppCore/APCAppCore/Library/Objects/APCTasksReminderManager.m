@@ -672,4 +672,65 @@ NSString * gTaskReminderDelayMessage;
     return includeTask;
 }
 
+/*********************************************************************************/
+#pragma mark - Task Reminder Helper For Determining "new tasks"
+/*********************************************************************************/
+
++ (NSArray*)findNewTasksFromOld:(NSArray*)oldTaskGroups
+                toNewTaskGroups:(NSArray*)newTaskGroups
+{
+    NSArray* oldTasks = [oldTaskGroups valueForKey:@"task"];
+    NSMutableArray* oldTaskIds = [[oldTasks valueForKey:@"taskID"] mutableCopy];
+    
+    NSMutableDictionary* oldTaskCompletedStatusById = [@{} mutableCopy];
+    NSMutableDictionary* oldTaskById                = [@{} mutableCopy];
+    
+    for (APCTaskGroup* taskGroup in oldTaskGroups) {
+        oldTaskCompletedStatusById[taskGroup.task.taskID] = @(taskGroup.isFullyCompleted);
+        oldTaskById[taskGroup.task.taskID]                = taskGroup.task;
+    }
+    
+    // Right now there are a few conditions for determining if a task should be reminded about...
+    // 1) for any task, if the taskId was not in the old list, and is now in the new list
+    // 2) for any task, if the task was completed in old, but is incomplete in new
+    // 3) for activities, if the task is incomplete, old task is less than 3 days old, and new
+    //    task is more than 3 days old
+    NSMutableArray* newTasks = [@[] mutableCopy];
+    for (APCTaskGroup* taskGroup in newTaskGroups)
+    {
+        APCTask* task = taskGroup.task;
+        
+        // Condition 1)
+        if (![oldTaskIds containsObject:task.taskID])
+        {
+            [newTasks addObject:task];
+        }
+        // Condition 2)
+        else if ([oldTaskCompletedStatusById[task.taskID] boolValue] == YES &&
+                 taskGroup.isFullyCompleted == NO)
+        {
+            [newTasks addObject:task];
+        }
+        else if ([task.taskType isEqualToNumber:@(APCTaskTypeActivityTask)])
+        {
+            APCTask* oldTask = oldTaskById[task.taskID];
+            // Condition 3)
+            if(taskGroup.isFullyCompleted == NO &&
+               [self isMoreThan3DaysOld:oldTask] == NO &&
+               [self isMoreThan3DaysOld:task] == YES)
+            {
+                [newTasks addObject:task];
+            }
+        }
+    }
+    
+    return newTasks;
+}
+
++ (BOOL) isMoreThan3DaysOld:(APCTask*) task
+{
+    NSInteger daysBetweenFromNow = [NSDate daysBetweenDate:task.updatedAt andDate:[NSDate date]];
+    return daysBetweenFromNow > 3 || daysBetweenFromNow < -3;
+}
+
 @end
