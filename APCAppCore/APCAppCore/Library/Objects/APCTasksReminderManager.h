@@ -98,7 +98,7 @@ static NSUInteger const kAPCTaskReminderDayOfWeekSaturday    = 7;
  */
 + (NSArray*)findNewTasksFromOld:(NSArray*)  oldTaskGroups
                 toNewTaskGroups:(NSArray*)  newTaskGroups
-   withAcitivtyReminderDuration:(NSInteger) daysIncomplete;
+   withActivityReminderDuration:(NSInteger) daysIncomplete;
 
 + (BOOL) isTask:(APCTask*)  task
       olderThan:(NSInteger) days;

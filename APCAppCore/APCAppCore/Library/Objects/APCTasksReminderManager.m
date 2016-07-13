@@ -678,7 +678,7 @@ NSString * gTaskReminderDelayMessage;
 
 + (NSArray*)findNewTasksFromOld:(NSArray*)  oldTaskGroups
                 toNewTaskGroups:(NSArray*)  newTaskGroups
-   withAcitivtyReminderDuration:(NSInteger) daysIncomplete
+   withActivityReminderDuration:(NSInteger) daysIncomplete
 {
     NSArray* oldTasks = [oldTaskGroups valueForKey:@"task"];
     NSMutableArray* oldTaskIds = [[oldTasks valueForKey:@"taskID"] mutableCopy];

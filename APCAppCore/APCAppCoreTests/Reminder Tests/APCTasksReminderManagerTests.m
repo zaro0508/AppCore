@@ -329,7 +329,7 @@ static NSInteger const kDaysIncompleteForActivityReminder = 3;
                                            updatedAt:[[NSDate date] dateByAddingDays:1]
                                             complete:NO]];
     
-    NSArray* newReminderTasks = [APCTasksReminderManager findNewTasksFromOld:oldTaskGroups toNewTaskGroups:newTaskGroups withAcitivtyReminderDuration:kDaysIncompleteForActivityReminder];
+    NSArray* newReminderTasks = [APCTasksReminderManager findNewTasksFromOld:oldTaskGroups toNewTaskGroups:newTaskGroups withActivityReminderDuration:kDaysIncompleteForActivityReminder];
     
     XCTAssertTrue(newReminderTasks != nil);
     XCTAssertTrue(newReminderTasks.count == 0);
@@ -352,7 +352,7 @@ static NSInteger const kDaysIncompleteForActivityReminder = 3;
                                            updatedAt:[NSDate date]
                                             complete:YES]];
     
-    NSArray* newReminderTasks = [APCTasksReminderManager findNewTasksFromOld:oldTaskGroups toNewTaskGroups:newTaskGroups withAcitivtyReminderDuration:kDaysIncompleteForActivityReminder];
+    NSArray* newReminderTasks = [APCTasksReminderManager findNewTasksFromOld:oldTaskGroups toNewTaskGroups:newTaskGroups withActivityReminderDuration:kDaysIncompleteForActivityReminder];
     
     XCTAssertTrue(newReminderTasks != nil);
     XCTAssertTrue(newReminderTasks.count > 0);
@@ -381,7 +381,7 @@ static NSInteger const kDaysIncompleteForActivityReminder = 3;
                                            updatedAt:[NSDate date]
                                             complete:YES]];
     
-    NSArray* newReminderTasks = [APCTasksReminderManager findNewTasksFromOld:oldTaskGroups toNewTaskGroups:newTaskGroups withAcitivtyReminderDuration:kDaysIncompleteForActivityReminder];
+    NSArray* newReminderTasks = [APCTasksReminderManager findNewTasksFromOld:oldTaskGroups toNewTaskGroups:newTaskGroups withActivityReminderDuration:kDaysIncompleteForActivityReminder];
     
     XCTAssertTrue(newReminderTasks != nil);
     XCTAssertTrue(newReminderTasks.count > 0);
@@ -405,7 +405,7 @@ static NSInteger const kDaysIncompleteForActivityReminder = 3;
                                            updatedAt:[NSDate date]
                                             complete:YES]];
     
-    NSArray* newReminderTasks = [APCTasksReminderManager findNewTasksFromOld:oldTaskGroups toNewTaskGroups:newTaskGroups withAcitivtyReminderDuration:kDaysIncompleteForActivityReminder];
+    NSArray* newReminderTasks = [APCTasksReminderManager findNewTasksFromOld:oldTaskGroups toNewTaskGroups:newTaskGroups withActivityReminderDuration:kDaysIncompleteForActivityReminder];
     
     XCTAssertTrue(newReminderTasks != nil);
     XCTAssertTrue(newReminderTasks.count > 0);
@@ -434,7 +434,7 @@ static NSInteger const kDaysIncompleteForActivityReminder = 3;
                                            updatedAt:[NSDate date]
                                             complete:NO]];
     
-    NSArray* newReminderTasks = [APCTasksReminderManager findNewTasksFromOld:oldTaskGroups toNewTaskGroups:newTaskGroups withAcitivtyReminderDuration:kDaysIncompleteForActivityReminder];
+    NSArray* newReminderTasks = [APCTasksReminderManager findNewTasksFromOld:oldTaskGroups toNewTaskGroups:newTaskGroups withActivityReminderDuration:kDaysIncompleteForActivityReminder];
     
     XCTAssertTrue(newReminderTasks != nil);
     XCTAssertTrue(newReminderTasks.count > 0);
@@ -463,7 +463,7 @@ static NSInteger const kDaysIncompleteForActivityReminder = 3;
                                            updatedAt:[[NSDate date] dateByAddingDays:-2]
                                             complete:NO]];
     
-    NSArray* newReminderTasks = [APCTasksReminderManager findNewTasksFromOld:oldTaskGroups toNewTaskGroups:newTaskGroups withAcitivtyReminderDuration:kDaysIncompleteForActivityReminder];
+    NSArray* newReminderTasks = [APCTasksReminderManager findNewTasksFromOld:oldTaskGroups toNewTaskGroups:newTaskGroups withActivityReminderDuration:kDaysIncompleteForActivityReminder];
     
     XCTAssertTrue(newReminderTasks != nil);
     XCTAssertTrue(newReminderTasks.count == 0);
@@ -491,7 +491,7 @@ static NSInteger const kDaysIncompleteForActivityReminder = 3;
                                            updatedAt:[[NSDate date] dateByAddingDays:-4]
                                             complete:NO]];
     
-    NSArray* newReminderTasks = [APCTasksReminderManager findNewTasksFromOld:oldTaskGroups toNewTaskGroups:newTaskGroups withAcitivtyReminderDuration:kDaysIncompleteForActivityReminder];
+    NSArray* newReminderTasks = [APCTasksReminderManager findNewTasksFromOld:oldTaskGroups toNewTaskGroups:newTaskGroups withActivityReminderDuration:kDaysIncompleteForActivityReminder];
     
     XCTAssertTrue(newReminderTasks != nil);
     XCTAssertTrue(newReminderTasks.count > 0);
