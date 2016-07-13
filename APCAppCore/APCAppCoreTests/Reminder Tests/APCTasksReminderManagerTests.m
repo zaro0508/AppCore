@@ -42,6 +42,8 @@ static NSString* const kWalkingName = @"Walking Assessment";
 static NSString* const kCardiacName = @"Cardiac Health Activity";
 static NSString* const kBalanceName = @"Balance Assessment";
 
+static NSInteger const kDaysIncompleteForActivityReminder = 3;
+
 @interface APCTasksReminderManagerTests : XCTestCase
 @property (nonatomic, strong) MockAPCTasksReminderManager* reminderManager;
 @property (nonatomic, strong) NSTimeZone* originalTimeZone;
@@ -327,7 +329,7 @@ static NSString* const kBalanceName = @"Balance Assessment";
                                            updatedAt:[[NSDate date] dateByAddingDays:1]
                                             complete:NO]];
     
-    NSArray* newReminderTasks = [APCTasksReminderManager findNewTasksFromOld:oldTaskGroups toNewTaskGroups:newTaskGroups];
+    NSArray* newReminderTasks = [APCTasksReminderManager findNewTasksFromOld:oldTaskGroups toNewTaskGroups:newTaskGroups withAcitivtyReminderDuration:kDaysIncompleteForActivityReminder];
     
     XCTAssertTrue(newReminderTasks != nil);
     XCTAssertTrue(newReminderTasks.count == 0);
@@ -350,7 +352,7 @@ static NSString* const kBalanceName = @"Balance Assessment";
                                            updatedAt:[NSDate date]
                                             complete:YES]];
     
-    NSArray* newReminderTasks = [APCTasksReminderManager findNewTasksFromOld:oldTaskGroups toNewTaskGroups:newTaskGroups];
+    NSArray* newReminderTasks = [APCTasksReminderManager findNewTasksFromOld:oldTaskGroups toNewTaskGroups:newTaskGroups withAcitivtyReminderDuration:kDaysIncompleteForActivityReminder];
     
     XCTAssertTrue(newReminderTasks != nil);
     XCTAssertTrue(newReminderTasks.count > 0);
@@ -379,7 +381,7 @@ static NSString* const kBalanceName = @"Balance Assessment";
                                            updatedAt:[NSDate date]
                                             complete:YES]];
     
-    NSArray* newReminderTasks = [APCTasksReminderManager findNewTasksFromOld:oldTaskGroups toNewTaskGroups:newTaskGroups];
+    NSArray* newReminderTasks = [APCTasksReminderManager findNewTasksFromOld:oldTaskGroups toNewTaskGroups:newTaskGroups withAcitivtyReminderDuration:kDaysIncompleteForActivityReminder];
     
     XCTAssertTrue(newReminderTasks != nil);
     XCTAssertTrue(newReminderTasks.count > 0);
@@ -403,7 +405,7 @@ static NSString* const kBalanceName = @"Balance Assessment";
                                            updatedAt:[NSDate date]
                                             complete:YES]];
     
-    NSArray* newReminderTasks = [APCTasksReminderManager findNewTasksFromOld:oldTaskGroups toNewTaskGroups:newTaskGroups];
+    NSArray* newReminderTasks = [APCTasksReminderManager findNewTasksFromOld:oldTaskGroups toNewTaskGroups:newTaskGroups withAcitivtyReminderDuration:kDaysIncompleteForActivityReminder];
     
     XCTAssertTrue(newReminderTasks != nil);
     XCTAssertTrue(newReminderTasks.count > 0);
@@ -432,7 +434,7 @@ static NSString* const kBalanceName = @"Balance Assessment";
                                            updatedAt:[NSDate date]
                                             complete:NO]];
     
-    NSArray* newReminderTasks = [APCTasksReminderManager findNewTasksFromOld:oldTaskGroups toNewTaskGroups:newTaskGroups];
+    NSArray* newReminderTasks = [APCTasksReminderManager findNewTasksFromOld:oldTaskGroups toNewTaskGroups:newTaskGroups withAcitivtyReminderDuration:kDaysIncompleteForActivityReminder];
     
     XCTAssertTrue(newReminderTasks != nil);
     XCTAssertTrue(newReminderTasks.count > 0);
@@ -461,7 +463,7 @@ static NSString* const kBalanceName = @"Balance Assessment";
                                            updatedAt:[[NSDate date] dateByAddingDays:-2]
                                             complete:NO]];
     
-    NSArray* newReminderTasks = [APCTasksReminderManager findNewTasksFromOld:oldTaskGroups toNewTaskGroups:newTaskGroups];
+    NSArray* newReminderTasks = [APCTasksReminderManager findNewTasksFromOld:oldTaskGroups toNewTaskGroups:newTaskGroups withAcitivtyReminderDuration:kDaysIncompleteForActivityReminder];
     
     XCTAssertTrue(newReminderTasks != nil);
     XCTAssertTrue(newReminderTasks.count == 0);
@@ -489,7 +491,7 @@ static NSString* const kBalanceName = @"Balance Assessment";
                                            updatedAt:[[NSDate date] dateByAddingDays:-4]
                                             complete:NO]];
     
-    NSArray* newReminderTasks = [APCTasksReminderManager findNewTasksFromOld:oldTaskGroups toNewTaskGroups:newTaskGroups];
+    NSArray* newReminderTasks = [APCTasksReminderManager findNewTasksFromOld:oldTaskGroups toNewTaskGroups:newTaskGroups withAcitivtyReminderDuration:kDaysIncompleteForActivityReminder];
     
     XCTAssertTrue(newReminderTasks != nil);
     XCTAssertTrue(newReminderTasks.count > 0);

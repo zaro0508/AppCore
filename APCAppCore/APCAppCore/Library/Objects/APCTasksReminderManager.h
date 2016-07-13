@@ -92,12 +92,15 @@ static NSUInteger const kAPCTaskReminderDayOfWeekSaturday    = 7;
  *
  * @param oldTaskGroups the result from reading cache BEFORE sycning from the web
  * @param newTaskGroups the result from reading cache AFTER  sycning from the web
+ * @param daysIncompleteToRemind the number of days that an activity can remain incomplete before it is considered "new"
  *
  * @return an array of task group objects that are considered "new" per the 3 conditions above
  */
-+ (NSArray*)findNewTasksFromOld:(NSArray*)oldTaskGroups
-                toNewTaskGroups:(NSArray*)newTaskGroups;
++ (NSArray*)findNewTasksFromOld:(NSArray*)  oldTaskGroups
+                toNewTaskGroups:(NSArray*)  newTaskGroups
+   withAcitivtyReminderDuration:(NSInteger) daysIncomplete;
 
-+ (BOOL) isMoreThan3DaysOld:(APCTask*) task;
++ (BOOL) isTask:(APCTask*)  task
+      olderThan:(NSInteger) days;
 
 @end

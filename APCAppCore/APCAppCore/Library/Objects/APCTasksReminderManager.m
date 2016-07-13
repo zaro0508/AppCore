@@ -676,8 +676,9 @@ NSString * gTaskReminderDelayMessage;
 #pragma mark - Task Reminder Helper For Determining "new tasks"
 /*********************************************************************************/
 
-+ (NSArray*)findNewTasksFromOld:(NSArray*)oldTaskGroups
-                toNewTaskGroups:(NSArray*)newTaskGroups
++ (NSArray*)findNewTasksFromOld:(NSArray*)  oldTaskGroups
+                toNewTaskGroups:(NSArray*)  newTaskGroups
+   withAcitivtyReminderDuration:(NSInteger) daysIncomplete
 {
     NSArray* oldTasks = [oldTaskGroups valueForKey:@"task"];
     NSMutableArray* oldTaskIds = [[oldTasks valueForKey:@"taskID"] mutableCopy];
@@ -716,8 +717,8 @@ NSString * gTaskReminderDelayMessage;
             APCTask* oldTask = oldTaskById[task.taskID];
             // Condition 3)
             if(taskGroup.isFullyCompleted == NO &&
-               [self isMoreThan3DaysOld:oldTask] == NO &&
-               [self isMoreThan3DaysOld:task] == YES)
+               [self isTask:oldTask olderThan:daysIncomplete] == NO &&
+               [self isTask:task    olderThan:daysIncomplete] == YES)
             {
                 [newTasks addObject:task];
             }
@@ -727,10 +728,11 @@ NSString * gTaskReminderDelayMessage;
     return newTasks;
 }
 
-+ (BOOL) isMoreThan3DaysOld:(APCTask*) task
++ (BOOL) isTask:(APCTask*)  task
+      olderThan:(NSInteger) days
 {
     NSInteger daysBetweenFromNow = [NSDate daysBetweenDate:task.updatedAt andDate:[NSDate date]];
-    return daysBetweenFromNow > 3 || daysBetweenFromNow < -3;
+    return daysBetweenFromNow > days;
 }
 
 @end
