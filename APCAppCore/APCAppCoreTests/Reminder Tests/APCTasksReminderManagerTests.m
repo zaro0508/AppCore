@@ -307,7 +307,7 @@ static NSString* const kBalanceName = @"Balance Assessment";
 
 - (void) testSurveyNoNew
 {
-    NSArray* oldTaskGroups = @[[self taskGroupWithID:@"qow"
+    NSArray* oldTaskGroups = @[[self taskGroupWithID:@"survey"
                                                 type:APCTaskTypeSurveyTask
                                            updatedAt:[NSDate date]
                                             complete:NO],
@@ -317,7 +317,7 @@ static NSString* const kBalanceName = @"Balance Assessment";
                                            updatedAt:[NSDate date]
                                             complete:NO]];
     
-    NSArray* newTaskGroups = @[[self taskGroupWithID:@"qow"
+    NSArray* newTaskGroups = @[[self taskGroupWithID:@"survey"
                                                 type:APCTaskTypeSurveyTask
                                            updatedAt:[[NSDate date] dateByAddingDays:1]
                                             complete:NO],
@@ -340,7 +340,7 @@ static NSString* const kBalanceName = @"Balance Assessment";
                                            updatedAt:[NSDate date]
                                             complete:YES]];
     
-    NSArray* newTaskGroups = @[[self taskGroupWithID:@"qow"
+    NSArray* newTaskGroups = @[[self taskGroupWithID:@"survey"
                                                 type:APCTaskTypeSurveyTask
                                            updatedAt:[NSDate date]
                                             complete:NO],
@@ -354,12 +354,12 @@ static NSString* const kBalanceName = @"Balance Assessment";
     
     XCTAssertTrue(newReminderTasks != nil);
     XCTAssertTrue(newReminderTasks.count > 0);
-    XCTAssertEqual(((APCTask*)newReminderTasks[0]).taskID, @"qow");
+    XCTAssertEqual(((APCTask*)newReminderTasks[0]).taskID, @"survey");
 }
 
 - (void) testSurveyRecurringAdded
 {
-    NSArray* oldTaskGroups = @[[self taskGroupWithID:@"qow"
+    NSArray* oldTaskGroups = @[[self taskGroupWithID:@"survey"
                                                 type:APCTaskTypeSurveyTask
                                            updatedAt:[NSDate date]
                                             complete:YES],
@@ -369,7 +369,7 @@ static NSString* const kBalanceName = @"Balance Assessment";
                                            updatedAt:[NSDate date]
                                             complete:YES]];
     
-    NSArray* newTaskGroups = @[[self taskGroupWithID:@"qow"
+    NSArray* newTaskGroups = @[[self taskGroupWithID:@"survey"
                                                 type:APCTaskTypeSurveyTask
                                            updatedAt:[NSDate date]
                                             complete:NO],
@@ -383,17 +383,17 @@ static NSString* const kBalanceName = @"Balance Assessment";
     
     XCTAssertTrue(newReminderTasks != nil);
     XCTAssertTrue(newReminderTasks.count > 0);
-    XCTAssertEqual(((APCTask*)newReminderTasks[0]).taskID, @"qow");
+    XCTAssertEqual(((APCTask*)newReminderTasks[0]).taskID, @"survey");
 }
 
 - (void) testActivityAdded
 {
-    NSArray* oldTaskGroups = @[[self taskGroupWithID:@"qow"
+    NSArray* oldTaskGroups = @[[self taskGroupWithID:@"survey"
                                                 type:APCTaskTypeSurveyTask
                                            updatedAt:[NSDate date]
                                             complete:NO]];
     
-    NSArray* newTaskGroups = @[[self taskGroupWithID:@"qow"
+    NSArray* newTaskGroups = @[[self taskGroupWithID:@"survey"
                                                 type:APCTaskTypeSurveyTask
                                            updatedAt:[NSDate date]
                                             complete:NO],
@@ -412,7 +412,7 @@ static NSString* const kBalanceName = @"Balance Assessment";
 
 - (void) testActivityRecurringAdded
 {
-    NSArray* oldTaskGroups = @[[self taskGroupWithID:@"qow"
+    NSArray* oldTaskGroups = @[[self taskGroupWithID:@"survey"
                                                 type:APCTaskTypeSurveyTask
                                            updatedAt:[NSDate date]
                                             complete:YES],
@@ -422,7 +422,7 @@ static NSString* const kBalanceName = @"Balance Assessment";
                                            updatedAt:[NSDate date]
                                             complete:YES]];
     
-    NSArray* newTaskGroups = @[[self taskGroupWithID:@"qow"
+    NSArray* newTaskGroups = @[[self taskGroupWithID:@"survey"
                                                 type:APCTaskTypeSurveyTask
                                            updatedAt:[NSDate date]
                                             complete:YES],
@@ -441,7 +441,7 @@ static NSString* const kBalanceName = @"Balance Assessment";
 
 - (void) testActivityNoNew
 {
-    NSArray* oldTaskGroups = @[[self taskGroupWithID:@"qow"
+    NSArray* oldTaskGroups = @[[self taskGroupWithID:@"survey"
                                                 type:APCTaskTypeSurveyTask
                                            updatedAt:[NSDate date]
                                             complete:YES],
@@ -451,7 +451,7 @@ static NSString* const kBalanceName = @"Balance Assessment";
                                            updatedAt:[[NSDate date] dateByAddingDays:-2]
                                             complete:NO]];
     
-    NSArray* newTaskGroups = @[[self taskGroupWithID:@"qow"
+    NSArray* newTaskGroups = @[[self taskGroupWithID:@"survey"
                                                 type:APCTaskTypeSurveyTask
                                            updatedAt:[NSDate date]
                                             complete:YES],
@@ -469,7 +469,7 @@ static NSString* const kBalanceName = @"Balance Assessment";
 
 - (void) testActivityUpdatedNew
 {
-    NSArray* oldTaskGroups = @[[self taskGroupWithID:@"qow"
+    NSArray* oldTaskGroups = @[[self taskGroupWithID:@"survey"
                                                 type:APCTaskTypeSurveyTask
                                            updatedAt:[NSDate date]
                                             complete:YES],
@@ -479,7 +479,7 @@ static NSString* const kBalanceName = @"Balance Assessment";
                                            updatedAt:[NSDate date]
                                             complete:NO]];
     
-    NSArray* newTaskGroups = @[[self taskGroupWithID:@"qow"
+    NSArray* newTaskGroups = @[[self taskGroupWithID:@"survey"
                                                 type:APCTaskTypeSurveyTask
                                            updatedAt:[NSDate date]
                                             complete:YES],
