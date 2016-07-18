@@ -245,4 +245,9 @@ static NSUInteger const kDateHelperDaysInAWeek = 7;
  */
 - (NSDate *) dateBySubtractingISO8601Duration: (NSString *) durationString;
 
+/*
+ * Determines the number of days between two dates
+ */
++ (NSInteger)daysBetweenDate:(NSDate*)fromDateTime andDate:(NSDate*)toDateTime;
+
 @end

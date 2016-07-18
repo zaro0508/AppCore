@@ -42,9 +42,12 @@ static NSString* const kWalkingName = @"Walking Assessment";
 static NSString* const kCardiacName = @"Cardiac Health Activity";
 static NSString* const kBalanceName = @"Balance Assessment";
 
+static NSInteger const kDaysIncompleteForActivityReminder = 3;
+
 @interface APCTasksReminderManagerTests : XCTestCase
 @property (nonatomic, strong) MockAPCTasksReminderManager* reminderManager;
 @property (nonatomic, strong) NSTimeZone* originalTimeZone;
+@property (nonatomic, strong) NSManagedObjectContext* moc;
 @end
 
 @implementation APCTasksReminderManagerTests
@@ -87,6 +90,11 @@ static NSString* const kBalanceName = @"Balance Assessment";
     [self.reminderManager manageTaskReminder:walkingAssessmentReminder];
     [self.reminderManager manageTaskReminder:cardiacHealthReminder];
     [self.reminderManager manageTaskReminder:balanceAssessmentReminder];
+    
+    NSManagedObjectModel *mom = [NSManagedObjectModel mergedModelFromBundles:[NSArray arrayWithObject:[NSBundle appleCoreBundle]]];
+    NSPersistentStoreCoordinator *psc = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:mom];
+    self.moc = [[NSManagedObjectContext alloc] init];
+    self.moc.persistentStoreCoordinator = psc;
 }
 
 /** Put teardown code here. This method is called after the invocation of each test method in the class. */
@@ -295,6 +303,213 @@ static NSString* const kBalanceName = @"Balance Assessment";
     XCTAssertEqualObjects(thisSaturdayAt5PM, saturdayAt5Pm.fireDate);
     
     XCTAssertEqual(NSCalendarUnitDay, saturdayAt5Pm.repeatInterval);
+}
+
+// pragma mark - old to new tasks
+
+- (void) testSurveyNoNew
+{
+    NSArray* oldTaskGroups = @[[self taskGroupWithID:@"survey"
+                                                type:APCTaskTypeSurveyTask
+                                           updatedAt:[NSDate date]
+                                            complete:NO],
+                               
+                               [self taskGroupWithID:@"activity"
+                                                type:APCTaskTypeActivityTask
+                                           updatedAt:[NSDate date]
+                                            complete:NO]];
+    
+    NSArray* newTaskGroups = @[[self taskGroupWithID:@"survey"
+                                                type:APCTaskTypeSurveyTask
+                                           updatedAt:[[NSDate date] dateByAddingDays:1]
+                                            complete:NO],
+                               
+                               [self taskGroupWithID:@"activity"
+                                                type:APCTaskTypeActivityTask
+                                           updatedAt:[[NSDate date] dateByAddingDays:1]
+                                            complete:NO]];
+    
+    NSArray* newReminderTasks = [APCTasksReminderManager findNewTasksFromOld:oldTaskGroups toNewTaskGroups:newTaskGroups withActivityReminderDuration:kDaysIncompleteForActivityReminder];
+    
+    XCTAssertTrue(newReminderTasks != nil);
+    XCTAssertTrue(newReminderTasks.count == 0);
+}
+
+- (void) testSurveyAdded
+{
+    NSArray* oldTaskGroups = @[[self taskGroupWithID:@"activity"
+                                                type:APCTaskTypeActivityTask
+                                           updatedAt:[NSDate date]
+                                            complete:YES]];
+    
+    NSArray* newTaskGroups = @[[self taskGroupWithID:@"survey"
+                                                type:APCTaskTypeSurveyTask
+                                           updatedAt:[NSDate date]
+                                            complete:NO],
+                               
+                               [self taskGroupWithID:@"activity"
+                                                type:APCTaskTypeActivityTask
+                                           updatedAt:[NSDate date]
+                                            complete:YES]];
+    
+    NSArray* newReminderTasks = [APCTasksReminderManager findNewTasksFromOld:oldTaskGroups toNewTaskGroups:newTaskGroups withActivityReminderDuration:kDaysIncompleteForActivityReminder];
+    
+    XCTAssertTrue(newReminderTasks != nil);
+    XCTAssertTrue(newReminderTasks.count > 0);
+    XCTAssertEqual(((APCTask*)newReminderTasks[0]).taskID, @"survey");
+}
+
+- (void) testSurveyRecurringAdded
+{
+    NSArray* oldTaskGroups = @[[self taskGroupWithID:@"survey"
+                                                type:APCTaskTypeSurveyTask
+                                           updatedAt:[NSDate date]
+                                            complete:YES],
+                               
+                               [self taskGroupWithID:@"activity"
+                                                type:APCTaskTypeActivityTask
+                                           updatedAt:[NSDate date]
+                                            complete:YES]];
+    
+    NSArray* newTaskGroups = @[[self taskGroupWithID:@"survey"
+                                                type:APCTaskTypeSurveyTask
+                                           updatedAt:[NSDate date]
+                                            complete:NO],
+                               
+                               [self taskGroupWithID:@"activity"
+                                                type:APCTaskTypeActivityTask
+                                           updatedAt:[NSDate date]
+                                            complete:YES]];
+    
+    NSArray* newReminderTasks = [APCTasksReminderManager findNewTasksFromOld:oldTaskGroups toNewTaskGroups:newTaskGroups withActivityReminderDuration:kDaysIncompleteForActivityReminder];
+    
+    XCTAssertTrue(newReminderTasks != nil);
+    XCTAssertTrue(newReminderTasks.count > 0);
+    XCTAssertEqual(((APCTask*)newReminderTasks[0]).taskID, @"survey");
+}
+
+- (void) testActivityAdded
+{
+    NSArray* oldTaskGroups = @[[self taskGroupWithID:@"survey"
+                                                type:APCTaskTypeSurveyTask
+                                           updatedAt:[NSDate date]
+                                            complete:NO]];
+    
+    NSArray* newTaskGroups = @[[self taskGroupWithID:@"survey"
+                                                type:APCTaskTypeSurveyTask
+                                           updatedAt:[NSDate date]
+                                            complete:NO],
+                               
+                               [self taskGroupWithID:@"activity"
+                                                type:APCTaskTypeActivityTask
+                                           updatedAt:[NSDate date]
+                                            complete:YES]];
+    
+    NSArray* newReminderTasks = [APCTasksReminderManager findNewTasksFromOld:oldTaskGroups toNewTaskGroups:newTaskGroups withActivityReminderDuration:kDaysIncompleteForActivityReminder];
+    
+    XCTAssertTrue(newReminderTasks != nil);
+    XCTAssertTrue(newReminderTasks.count > 0);
+    XCTAssertEqual(((APCTask*)newReminderTasks[0]).taskID, @"activity");
+}
+
+- (void) testActivityRecurringAdded
+{
+    NSArray* oldTaskGroups = @[[self taskGroupWithID:@"survey"
+                                                type:APCTaskTypeSurveyTask
+                                           updatedAt:[NSDate date]
+                                            complete:YES],
+                               
+                               [self taskGroupWithID:@"activity"
+                                                type:APCTaskTypeActivityTask
+                                           updatedAt:[NSDate date]
+                                            complete:YES]];
+    
+    NSArray* newTaskGroups = @[[self taskGroupWithID:@"survey"
+                                                type:APCTaskTypeSurveyTask
+                                           updatedAt:[NSDate date]
+                                            complete:YES],
+                               
+                               [self taskGroupWithID:@"activity"
+                                                type:APCTaskTypeActivityTask
+                                           updatedAt:[NSDate date]
+                                            complete:NO]];
+    
+    NSArray* newReminderTasks = [APCTasksReminderManager findNewTasksFromOld:oldTaskGroups toNewTaskGroups:newTaskGroups withActivityReminderDuration:kDaysIncompleteForActivityReminder];
+    
+    XCTAssertTrue(newReminderTasks != nil);
+    XCTAssertTrue(newReminderTasks.count > 0);
+    XCTAssertEqual(((APCTask*)newReminderTasks[0]).taskID, @"activity");
+}
+
+- (void) testActivityNoNew
+{
+    NSArray* oldTaskGroups = @[[self taskGroupWithID:@"survey"
+                                                type:APCTaskTypeSurveyTask
+                                           updatedAt:[NSDate date]
+                                            complete:YES],
+                               
+                               [self taskGroupWithID:@"activity"
+                                                type:APCTaskTypeActivityTask
+                                           updatedAt:[[NSDate date] dateByAddingDays:-2]
+                                            complete:NO]];
+    
+    NSArray* newTaskGroups = @[[self taskGroupWithID:@"survey"
+                                                type:APCTaskTypeSurveyTask
+                                           updatedAt:[NSDate date]
+                                            complete:YES],
+                               
+                               [self taskGroupWithID:@"activity"
+                                                type:APCTaskTypeActivityTask
+                                           updatedAt:[[NSDate date] dateByAddingDays:-2]
+                                            complete:NO]];
+    
+    NSArray* newReminderTasks = [APCTasksReminderManager findNewTasksFromOld:oldTaskGroups toNewTaskGroups:newTaskGroups withActivityReminderDuration:kDaysIncompleteForActivityReminder];
+    
+    XCTAssertTrue(newReminderTasks != nil);
+    XCTAssertTrue(newReminderTasks.count == 0);
+}
+
+- (void) testActivityUpdatedNew
+{
+    NSArray* oldTaskGroups = @[[self taskGroupWithID:@"survey"
+                                                type:APCTaskTypeSurveyTask
+                                           updatedAt:[NSDate date]
+                                            complete:YES],
+                               
+                               [self taskGroupWithID:@"activity"
+                                                type:APCTaskTypeActivityTask
+                                           updatedAt:[NSDate date]
+                                            complete:NO]];
+    
+    NSArray* newTaskGroups = @[[self taskGroupWithID:@"survey"
+                                                type:APCTaskTypeSurveyTask
+                                           updatedAt:[NSDate date]
+                                            complete:YES],
+                               
+                               [self taskGroupWithID:@"activity"
+                                                type:APCTaskTypeActivityTask
+                                           updatedAt:[[NSDate date] dateByAddingDays:-4]
+                                            complete:NO]];
+    
+    NSArray* newReminderTasks = [APCTasksReminderManager findNewTasksFromOld:oldTaskGroups toNewTaskGroups:newTaskGroups withActivityReminderDuration:kDaysIncompleteForActivityReminder];
+    
+    XCTAssertTrue(newReminderTasks != nil);
+    XCTAssertTrue(newReminderTasks.count > 0);
+    XCTAssertEqual(((APCTask*)newReminderTasks[0]).taskID, @"activity");
+}
+
+- (APCTaskGroup*) taskGroupWithID:(NSString*) ID
+                             type:(APCTaskType) type
+                        updatedAt:(NSDate*) updatedAt
+                         complete:(BOOL) complete
+{
+    APCTask *task = [NSEntityDescription insertNewObjectForEntityForName:@"APCTask" inManagedObjectContext:self.moc];
+    task.taskID = ID;
+    task.taskType = @(type);
+    task.updatedAt = updatedAt;
+    task.taskFinished = complete ? [[NSDate date] dateByAddingDays:-1] : nil;
+    APCTaskGroup* taskGroup = [[APCTaskGroup alloc] initWithTasks:@[task] forScheduledDate:[NSDate date]];
+    return taskGroup;
 }
 
 @end

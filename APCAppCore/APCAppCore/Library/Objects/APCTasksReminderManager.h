@@ -33,6 +33,7 @@
  
 #import <Foundation/Foundation.h>
 #import "APCTaskReminder.h"
+#import "APCTask.h"
 
 // These must be reflected by NSCalendar NSCalendarUnitWeekday, except for the EveryDay value
 static NSUInteger const kAPCTaskReminderDayOfWeekEveryDay    = 0;
@@ -80,5 +81,26 @@ static NSUInteger const kAPCTaskReminderDayOfWeekSaturday    = 7;
  * Get the name of the study
  */
 + (NSString *)studyName;
+
+/*
+ * Right now there are a few conditions for determining if a task should be reminded about...
+ *
+ * 1) for any task, if the taskId was not in the old list, and is now in the new list
+ * 2) for activities, if the task was completed in old, but is incomplete in new
+ * 3) for activities, if the task is incomplete, old task is less than 3 days old, and new
+ *    task is more than 3 days old
+ *
+ * @param oldTaskGroups the result from reading cache BEFORE sycning from the web
+ * @param newTaskGroups the result from reading cache AFTER  sycning from the web
+ * @param daysIncompleteToRemind the number of days that an activity can remain incomplete before it is considered "new"
+ *
+ * @return an array of task group objects that are considered "new" per the 3 conditions above
+ */
++ (NSArray*)findNewTasksFromOld:(NSArray*)  oldTaskGroups
+                toNewTaskGroups:(NSArray*)  newTaskGroups
+   withActivityReminderDuration:(NSInteger) daysIncomplete;
+
++ (BOOL) isTask:(APCTask*)  task
+      olderThan:(NSInteger) days;
 
 @end
