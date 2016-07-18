@@ -116,6 +116,9 @@
     
     APCCheckTableViewCell *cell = (APCCheckTableViewCell *)[tableView dequeueReusableCellWithIdentifier:kAPCCheckTableViewCellIdentifier];
     
+    cell.textLabel.minimumScaleFactor = 0.5f;
+    cell.textLabel.adjustsFontSizeToFitWidth = YES; // no ellipses
+    
     cell.textLabel.text = optionItem.caption;
     cell.confirmationView.completed = optionItem.on;
     
