@@ -678,13 +678,13 @@ NSString * gTaskReminderDelayMessage;
 
 + (NSArray*)findNewTasksFromOld:(NSArray*)  oldTaskGroups
                 toNewTaskGroups:(NSArray*)  newTaskGroups
-   withActivityReminderDuration:(NSInteger) daysIncomplete
-{
+   withActivityReminderDuration:(NSInteger) daysIncomplete {
+    
     NSArray* oldTasks = [oldTaskGroups valueForKey:@"task"];
     NSMutableArray* oldTaskIds = [[oldTasks valueForKey:@"taskID"] mutableCopy];
     
-    NSMutableDictionary* oldTaskCompletedStatusById = [@{} mutableCopy];
-    NSMutableDictionary* oldTaskById                = [@{} mutableCopy];
+    NSMutableDictionary* oldTaskCompletedStatusById = [NSMutableDictionary dictionary];
+    NSMutableDictionary* oldTaskById                = [NSMutableDictionary dictionary];
     
     for (APCTaskGroup* taskGroup in oldTaskGroups) {
         oldTaskCompletedStatusById[taskGroup.task.taskID] = @(taskGroup.isFullyCompleted);
@@ -696,30 +696,26 @@ NSString * gTaskReminderDelayMessage;
     // 2) for any task, if the task was completed in old, but is incomplete in new
     // 3) for activities, if the task is incomplete, old task is less than 3 days old, and new
     //    task is more than 3 days old
-    NSMutableArray* newTasks = [@[] mutableCopy];
-    for (APCTaskGroup* taskGroup in newTaskGroups)
-    {
+    NSMutableArray* newTasks = [NSMutableArray array];
+    for (APCTaskGroup* taskGroup in newTaskGroups) {
+        
         APCTask* task = taskGroup.task;
         
         // Condition 1)
-        if (![oldTaskIds containsObject:task.taskID])
-        {
+        if (![oldTaskIds containsObject:task.taskID]) {
             [newTasks addObject:task];
         }
         // Condition 2)
         else if ([oldTaskCompletedStatusById[task.taskID] boolValue] == YES &&
-                 taskGroup.isFullyCompleted == NO)
-        {
+                 taskGroup.isFullyCompleted == NO) {
             [newTasks addObject:task];
         }
-        else if ([task.taskType isEqualToNumber:@(APCTaskTypeActivityTask)])
-        {
+        else if ([task.taskType isEqualToNumber:@(APCTaskTypeActivityTask)]) {
             APCTask* oldTask = oldTaskById[task.taskID];
             // Condition 3)
             if(taskGroup.isFullyCompleted == NO &&
                [self isTask:oldTask olderThan:daysIncomplete] == NO &&
-               [self isTask:task    olderThan:daysIncomplete] == YES)
-            {
+               [self isTask:task    olderThan:daysIncomplete] == YES) {
                 [newTasks addObject:task];
             }
         }
@@ -729,8 +725,8 @@ NSString * gTaskReminderDelayMessage;
 }
 
 + (BOOL) isTask:(APCTask*)  task
-      olderThan:(NSInteger) days
-{
+      olderThan:(NSInteger) days {
+    
     NSInteger daysBetweenFromNow = [NSDate daysBetweenDate:task.updatedAt andDate:[NSDate date]];
     return daysBetweenFromNow > days;
 }
