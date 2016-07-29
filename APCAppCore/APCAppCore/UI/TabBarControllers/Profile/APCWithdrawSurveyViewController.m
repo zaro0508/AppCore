@@ -129,12 +129,19 @@
     APCTableViewSection *sectionItem = self.items[indexPath.section];
     if ((NSUInteger)indexPath.row == (sectionItem.rows.count - 1)) {
         
-        APCWithdrawDescriptionViewController *viewController = [[UIStoryboard storyboardWithName:@"APCProfile" bundle:[NSBundle appleCoreBundle]] instantiateViewControllerWithIdentifier:@"APCWithdrawDescriptionViewController"];
-        viewController.delegate = self;
-        viewController.descriptionText = self.descriptionText;
-        UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:viewController];
-        [self.navigationController presentViewController:navController animated:YES completion:nil];
+        APCTableViewSwitchItem *optionItem = [self itemForIndexPath:indexPath];
         
+        if (optionItem.on == NO || self.allowUserToDeselectCustomOpt == NO) {
+            APCWithdrawDescriptionViewController *viewController = [[UIStoryboard storyboardWithName:@"APCProfile" bundle:[NSBundle appleCoreBundle]] instantiateViewControllerWithIdentifier:@"APCWithdrawDescriptionViewController"];
+            viewController.delegate = self;
+            viewController.descriptionText = self.descriptionText;
+            UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:viewController];
+            [self.navigationController presentViewController:navController animated:YES completion:nil];
+        } else {
+            optionItem.on = !optionItem.on;
+            self.descriptionText = @"";
+            [tableView reloadData];
+        }        
     } else {
         APCTableViewSwitchItem *optionItem = [self itemForIndexPath:indexPath];
         optionItem.on = !optionItem.on;
