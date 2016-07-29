@@ -61,6 +61,7 @@
     
     self.items = [self prepareContent];
     self.descriptionText = @"";
+    self.allowUserToDeselectCustomOpt = YES;
     
     self.submitButton.enabled = NO;
     
