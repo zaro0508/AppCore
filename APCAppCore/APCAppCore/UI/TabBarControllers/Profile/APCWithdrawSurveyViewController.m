@@ -61,7 +61,6 @@
     
     self.items = [self prepareContent];
     self.descriptionText = @"";
-    self.allowUserToDeselectCustomOpt = YES;
     
     self.submitButton.enabled = NO;
     
@@ -132,7 +131,7 @@
         
         APCTableViewSwitchItem *optionItem = [self itemForIndexPath:indexPath];
         
-        if (optionItem.on == NO || self.allowUserToDeselectCustomOpt == NO) {
+        if (optionItem.on == NO) {
             APCWithdrawDescriptionViewController *viewController = [[UIStoryboard storyboardWithName:@"APCProfile" bundle:[NSBundle appleCoreBundle]] instantiateViewControllerWithIdentifier:@"APCWithdrawDescriptionViewController"];
             viewController.delegate = self;
             viewController.descriptionText = self.descriptionText;

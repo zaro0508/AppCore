@@ -44,8 +44,6 @@
 
 @property (weak, nonatomic) IBOutlet UIButton *submitButton;
 
-@property (nonatomic) BOOL allowUserToDeselectCustomOpt;
-
 @property (nonatomic, strong) NSArray *items;
 
 - (NSArray *)prepareContent;
