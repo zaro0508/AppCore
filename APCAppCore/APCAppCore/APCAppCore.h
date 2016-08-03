@@ -357,3 +357,8 @@ FOUNDATION_EXPORT const unsigned char APCAppCoreVersionString[];
 #import <APCAppCore/APCScheduleExpressionTokenizer.h>
 #import <APCAppCore/APCTimeSelector.h>
 #import <APCAppCore/APCTimeSelectorEnumerator.h>
+
+/* -------------------------
+ Importer
+ ------------------------- */
+#import <APCAppCore/APCTaskImporter.h>

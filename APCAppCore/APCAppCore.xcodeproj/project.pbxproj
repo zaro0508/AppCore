@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		049439811B8FC04000CAE23C /* APCDownloadDataViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 0494397F1B8FC04000CAE23C /* APCDownloadDataViewController.h */; };
 		049439821B8FC04000CAE23C /* APCDownloadDataViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 049439801B8FC04000CAE23C /* APCDownloadDataViewController.m */; };
-		04FB64471BB4883900D0A50D /* APCTaskImporter.h in Headers */ = {isa = PBXBuildFile; fileRef = 04FB64451BB4883900D0A50D /* APCTaskImporter.h */; };
+		04FB64471BB4883900D0A50D /* APCTaskImporter.h in Headers */ = {isa = PBXBuildFile; fileRef = 04FB64451BB4883900D0A50D /* APCTaskImporter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		04FB64481BB4883900D0A50D /* APCTaskImporter.m in Sources */ = {isa = PBXBuildFile; fileRef = 04FB64461BB4883900D0A50D /* APCTaskImporter.m */; };
 		08023C4F1AA94F48008E6DDA /* APCAllSetContentViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 08023C4D1AA94F48008E6DDA /* APCAllSetContentViewController.h */; };
 		08023C501AA94F48008E6DDA /* APCAllSetContentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 08023C4E1AA94F48008E6DDA /* APCAllSetContentViewController.m */; };
