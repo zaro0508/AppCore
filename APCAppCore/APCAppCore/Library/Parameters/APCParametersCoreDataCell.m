@@ -37,28 +37,7 @@ static CGFloat cellHeight = 87;
 
 @implementation APCParametersCoreDataCell
 
-- (void)awakeFromNib {
-    // Initialization code
-}
-
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-    [super setSelected:selected animated:animated];
-
-    // Configure the view for the selected state
-}
-
-/*********************************************************************************/
-#pragma mark - IBAction & IBOutlet
-/*********************************************************************************/
-
-
-/*********************************************************************************/
-#pragma mark - Class Methods
-/*********************************************************************************/
-
 + (float)heightOfCell {
-    
-    
     return cellHeight;
 }
 

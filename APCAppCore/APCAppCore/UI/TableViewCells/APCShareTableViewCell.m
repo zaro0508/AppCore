@@ -43,8 +43,7 @@ NSString * const kAPCShareTableViewCellIdentifier = @"ShareTableViewCellIdentifi
 @synthesize textLabel = _textLabel;
 
 - (void)awakeFromNib {
-    // Initialization code
-    
+    [super awakeFromNib];
     [self setupAppearance];
 }
 

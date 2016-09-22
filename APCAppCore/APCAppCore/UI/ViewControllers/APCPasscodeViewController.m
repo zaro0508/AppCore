@@ -49,7 +49,7 @@
 #import "APCUserInfoConstants.h"
 #import "UIImage+APCHelper.h"
 
-@interface APCPasscodeViewController ()<APCPasscodeViewDelegate>
+@interface APCPasscodeViewController ()<APCPasscodeViewDelegate, CAAnimationDelegate>
 
 @property (nonatomic, strong) LAContext *touchContext;
 @property (weak, nonatomic) IBOutlet UILabel *titleLabel;

@@ -51,6 +51,7 @@ NSString * const kAPCTextFieldTableViewCellIdentifier = @"APCTextFieldTableViewC
 @synthesize textLabel = _textLabel;
 
 - (void)awakeFromNib {
+    [super awakeFromNib];
     // Initialization code
     self.textField.delegate = self;
     

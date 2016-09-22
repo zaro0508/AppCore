@@ -44,7 +44,7 @@
 @implementation APCDashboardInsightsTableViewCell
 
 - (void)awakeFromNib {
-    
+    [super awakeFromNib];
     [self.expandButton setImage:[[UIImage imageNamed:@"expand_icon"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate]
                        forState:UIControlStateNormal];
     

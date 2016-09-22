@@ -46,6 +46,7 @@ NSString * const kSignUpPermissionsCellIdentifier = @"APCPermissionsCell";
 
 - (void)awakeFromNib
 {
+    [super awakeFromNib];
     self.titleLabel.font = [UIFont appLightFontWithSize:25.0];
     self.titleLabel.textColor = [UIColor appSecondaryColor1];
     

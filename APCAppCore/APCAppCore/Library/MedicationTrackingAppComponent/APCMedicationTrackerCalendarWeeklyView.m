@@ -71,7 +71,7 @@ static  NSString  *kSelectedDateIsTodayKey    = @"kSelectedDateIsTodayKey";
 
 static  NSString  *kThinSpaceEnDashJoiner     = @"\u2009\u2013\u2009";
 
-@interface APCMedicationTrackerCalendarWeeklyView  ( ) <UIGestureRecognizerDelegate, APCMedicationTrackerCalendarDailyViewDelegate>
+@interface APCMedicationTrackerCalendarWeeklyView  ( ) <UIGestureRecognizerDelegate, APCMedicationTrackerCalendarDailyViewDelegate, CAAnimationDelegate>
 
 @property  (nonatomic,  strong)  UIView                    *backdrop;
 @property  (nonatomic,  strong)  UIView                    *dailyBackdrop;

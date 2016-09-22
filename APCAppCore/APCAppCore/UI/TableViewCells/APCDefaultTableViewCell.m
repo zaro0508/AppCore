@@ -45,16 +45,6 @@ NSString * const kAPCDefaultTableViewCellIdentifier = @"APCDefaultTableViewCell"
 @synthesize textLabel = _textLabel;
 @synthesize detailTextLabel = _detailTextLabel;
 
-- (void)awakeFromNib {
-    // Initialization code
-}
-
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-    [super setSelected:selected animated:animated];
-
-    // Configure the view for the selected state
-}
-
 - (void)setType:(APCDefaultTableViewCellType)type
 {
     _type = type;
