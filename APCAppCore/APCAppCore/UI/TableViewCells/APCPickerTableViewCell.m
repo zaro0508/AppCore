@@ -38,7 +38,7 @@ NSString * const kAPCPickerTableViewCellIdentifier = @"APCPickerTableViewCell";
 @implementation APCPickerTableViewCell
 
 - (void)awakeFromNib {
-    // Initialization code
+    [super awakeFromNib];
     self.pickerView.dataSource = self;
     self.pickerView.delegate = self;
 }
@@ -46,12 +46,6 @@ NSString * const kAPCPickerTableViewCellIdentifier = @"APCPickerTableViewCell";
 - (void)dealloc {
     _pickerView.delegate = nil;
     _pickerView.dataSource = nil;
-}
-
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-    [super setSelected:selected animated:animated];
-
-    // Configure the view for the selected state
 }
 
 - (void)setType:(APCPickerCellType)type

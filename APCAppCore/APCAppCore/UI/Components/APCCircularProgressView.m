@@ -36,7 +36,7 @@
 
 static NSString * const kAPCCircularProgressViewAnimationKey = @"APCCircularProgressViewAnimationKey";
 
-@interface APCCircularProgressView ()
+@interface APCCircularProgressView () <CAAnimationDelegate>
 
 @property (nonatomic, strong) CAShapeLayer *circularTrackLayer;
 @property (nonatomic, strong) CAShapeLayer *circularProgressLayer;

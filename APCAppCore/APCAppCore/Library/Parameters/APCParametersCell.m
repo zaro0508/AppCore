@@ -50,7 +50,7 @@ static CGFloat cellHeight = 114.0;
 }
 
 - (void)awakeFromNib {
-    // Initialization code
+    [super awakeFromNib];
     [self.parameterTextInput setDelegate:self];
 }
 

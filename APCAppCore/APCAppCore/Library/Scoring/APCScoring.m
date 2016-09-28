@@ -1510,7 +1510,7 @@ static NSInteger const          kNumberOfDaysInYear    = 365;
 - (NSUInteger)hash
 {
     NSUInteger dataHash = [[self.taskId dataUsingEncoding:NSUTF8StringEncoding] hash];
-    return (((NSUInteger)dataHash) << (CHAR_BIT * sizeof(NSUInteger)) / 2) | (((NSUInteger)dataHash) >> ((CHAR_BIT * sizeof(NSUInteger) - (CHAR_BIT * sizeof(NSUInteger)) / 2))) ^ [self.valueKey hash];
+    return (((NSUInteger)dataHash) << (CHAR_BIT * sizeof(NSUInteger)) / 2) | ((((NSUInteger)dataHash) >> ((CHAR_BIT * sizeof(NSUInteger) - (CHAR_BIT * sizeof(NSUInteger)) / 2))) ^ [self.valueKey hash]);
 }
 
 @end

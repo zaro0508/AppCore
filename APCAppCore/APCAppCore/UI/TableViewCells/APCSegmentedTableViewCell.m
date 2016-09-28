@@ -44,6 +44,7 @@ NSString * const kAPCSegmentedTableViewCellIdentifier = @"APCSegmentedTableViewC
 @implementation APCSegmentedTableViewCell
 
 - (void)awakeFromNib {
+    [super awakeFromNib];
     // Initialization code
     
     self.segmentedButton = [[APCSegmentedButton alloc] initWithButtons:@[self.maleButton, self.femaleButton] normalColor:[UIColor appSecondaryColor3] highlightColor:[UIColor appSecondaryColor1]];
@@ -53,11 +54,7 @@ NSString * const kAPCSegmentedTableViewCellIdentifier = @"APCSegmentedTableViewC
     [self setupAppearance];
 }
 
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-    [super setSelected:selected animated:animated];
 
-    // Configure the view for the selected state
-}
 
 - (void)setupAppearance
 {

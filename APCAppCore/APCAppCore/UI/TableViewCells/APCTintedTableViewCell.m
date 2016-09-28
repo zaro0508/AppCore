@@ -50,14 +50,8 @@ NSString *const kAPCTintedTableViewCellIdentifier = @"APCTintedTableViewCell";
 @synthesize imageView = _imageView;
 
 - (void)awakeFromNib {
-    
+    [super awakeFromNib];
     [self setupAppearance];
-}
-
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-    [super setSelected:selected animated:animated];
-
-    // Configure the view for the selected state
 }
 
 - (void)setupAppearance

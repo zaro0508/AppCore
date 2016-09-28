@@ -53,6 +53,7 @@ static CGFloat kViewsPadding          = 10.f;
 
 - (void)awakeFromNib
 {
+    [super awakeFromNib];
     self.titleLabel = [[UILabel alloc] init];
     self.titleLabel.backgroundColor = [UIColor clearColor];
     [self.titleLabel setFont:[UIFont appRegularFontWithSize:16.0f]];
