@@ -110,8 +110,10 @@ static CGFloat const kTableViewSectionHeaderHeight = 77;
     
     self.permissionManager = [[APCPermissionsManager alloc] init];
 
-    // make sure we know the state of CoreMotion permissions so it's available when we need it
-    [self.permissionManager requestForPermissionForType:kAPCSignUpPermissionsTypeCoremotion withCompletion:nil];
+    if ([self.permissionManager.signUpPermissionTypes containsObject:@(kAPCSignUpPermissionsTypeCoremotion)]) {
+        // make sure we know the state of CoreMotion permissions so it's available when we need it
+        [self.permissionManager requestForPermissionForType:kAPCSignUpPermissionsTypeCoremotion withCompletion:nil];
+    }
 }
 
 - (void) viewWillAppear: (BOOL) animated
