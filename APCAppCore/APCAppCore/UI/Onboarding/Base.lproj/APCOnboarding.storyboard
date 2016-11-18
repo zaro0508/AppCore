@@ -1787,7 +1787,7 @@
                                                                             <rect key="frame" x="0.0" y="0.0" width="320" height="320"/>
                                                                             <subviews>
                                                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="About the App" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1hj-JM-Iql">
-                                                                                    <rect key="frame" x="76" y="36" width="167.5" height="33"/>
+                                                                                    <rect key="frame" x="76" y="36" width="168" height="33"/>
                                                                                     <constraints>
                                                                                         <constraint firstAttribute="height" constant="33" id="Ery-wB-uVE"/>
                                                                                     </constraints>
@@ -2087,6 +2087,7 @@
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <state key="normal" title="Already Participating?">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
                                 <connections>
