@@ -565,8 +565,13 @@ static CGFloat const kTableViewSectionHeaderHeight = 77;
 {
     self.isFetchingFromCoreDataRightNow = YES;
     APCSpinnerViewController *spinnerController = [[APCSpinnerViewController alloc] init];
-    [self presentViewController:spinnerController animated:YES completion:nil];
+    [self presentViewController:spinnerController animated:YES completion:^{
+        [self actuallyReloadTasksFromCoreDataWithSpinnerController:spinnerController];
+    }];
+}
 
+- (void)actuallyReloadTasksFromCoreDataWithSpinnerController:(APCSpinnerViewController *)spinnerController
+{
     NSPredicate *filterForOptionalTasks = [NSPredicate predicateWithFormat: @"%K == %@",
                                            NSStringFromSelector(@selector(taskIsOptional)),
                                            @(YES)];
@@ -693,6 +698,11 @@ static CGFloat const kTableViewSectionHeaderHeight = 77;
              //
              weakSelf.isFetchingFromCoreDataRightNow = NO;
              [weakSelf updateWholeUI];
+             
+             // don't forget to dismiss the spinner!
+             dispatch_async(dispatch_get_main_queue(), ^{
+                 [spinnerController dismissViewControllerAnimated:YES completion:nil];
+             });
 
          }];  // second fetch:  optional tasks
      }];  // first fetch:  required tasks, for a range of dates
