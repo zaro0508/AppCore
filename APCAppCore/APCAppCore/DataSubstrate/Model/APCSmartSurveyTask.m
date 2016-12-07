@@ -300,6 +300,11 @@ static APCDummyObject * _dummyObject;
     id value                = [rule valueForKeyPath:kRuleValueKey];
     NSString * skipToValue  = [rule valueForKeyPath:kRuleSkipToKey];
     
+    // emm 2016-12-07 hack to support endSurvey rules, which are the only ones that have no skipTo value
+    if (!skipToValue) {
+        skipToValue = kEndOfSurveyMarker;
+    }
+    
     //Skip
     if ([operator isEqualToString:kOperatorSkip] && answer == nil) {
         retValue = skipToValue;
