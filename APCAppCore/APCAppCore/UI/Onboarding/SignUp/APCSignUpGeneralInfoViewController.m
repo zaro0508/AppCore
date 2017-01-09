@@ -585,7 +585,7 @@ static CGFloat kHeaderHeight = 157.0f;
         self.user.email = self.emailTextField.text;
         
         if (self.profileImage) {
-            self.user.profileImage = UIImageJPEGRepresentation(self.profileImage, 1.0);
+            self.user.profileImage = self.profileImage;
         }
     }
     

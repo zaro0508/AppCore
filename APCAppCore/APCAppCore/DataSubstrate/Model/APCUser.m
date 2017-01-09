@@ -160,7 +160,7 @@ static NSString *const kSignedInKey = @"SignedIn";
 
 - (void)copyPropertiesFromStoredUserData:(APCStoredUserData*)storedUserData
 {
-    _profileImage = [storedUserData.profileImage copy];
+    _profileImage = (storedUserData.profileImage == nil) ? nil : [UIImage imageWithData:storedUserData.profileImage];
     _birthDate = [storedUserData.birthDate copy];
     _biologicalSex = (HKBiologicalSex)[storedUserData.biologicalSex integerValue];
     _bloodType = (HKBloodType) [storedUserData.bloodType integerValue];
@@ -428,10 +428,10 @@ static NSString *const kSignedInKey = @"SignedIn";
     [self updateStoredProperty:kPhoneNumberPropertyName withValue:phoneNumber];
 }
 
-- (void)setProfileImage:(NSData *)profileImage
+- (void)setProfileImage:(UIImage *)profileImage
 {
     _profileImage = profileImage;
-    [self updateStoredProperty:kProfileImagePropertyName withValue:profileImage];
+    [self updateStoredProperty:kProfileImagePropertyName withValue:UIImagePNGRepresentation(profileImage)];
 }
 
 - (void)setConsented:(BOOL)consented
