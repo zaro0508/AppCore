@@ -311,7 +311,6 @@
 		A7CFE4B81A8B05F4009A171C /* APCStudyOverviewCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A7CFE4B41A8B05F4009A171C /* APCStudyOverviewCollectionViewController.m */; };
 		CB37461B1D36CC3600263F34 /* NSDateCategoryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CB37461A1D36CC3600263F34 /* NSDateCategoryTests.m */; };
 		CBC2593A1C58077A0091308E /* MockAPCTasksReminderManager.h in Headers */ = {isa = PBXBuildFile; fileRef = CBC259391C58077A0091308E /* MockAPCTasksReminderManager.h */; };
-		CBC2593B1C5838940091308E /* APCScheduleExpressionEnumeratorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F5F129DF1A2F78490015982C /* APCScheduleExpressionEnumeratorTests.m */; };
 		CBD5DBF21C57FFB400AD654E /* MockAPCTasksReminderManager.m in Sources */ = {isa = PBXBuildFile; fileRef = CBD5DBF11C57FFB400AD654E /* MockAPCTasksReminderManager.m */; };
 		CBD5DBF61C5806AD00AD654E /* APCTasksReminderManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CBD5DBF51C5806AD00AD654E /* APCTasksReminderManagerTests.m */; };
 		CF03CD021AA23DA2000437FF /* APCMedicationDetailsTableViewCell.h in Headers */ = {isa = PBXBuildFile; fileRef = CF03CCFF1AA23DA2000437FF /* APCMedicationDetailsTableViewCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1474,7 +1473,6 @@
 		F5F129DA1A2F78490015982C /* APCScheduleExpressionListSelectorTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APCScheduleExpressionListSelectorTests.m; sourceTree = "<group>"; };
 		F5F129DC1A2F78490015982C /* APCScheduleExpressionPointSelectorTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APCScheduleExpressionPointSelectorTests.m; sourceTree = "<group>"; };
 		F5F129DD1A2F78490015982C /* APCScheduleExpressionParserTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APCScheduleExpressionParserTests.m; sourceTree = "<group>"; };
-		F5F129DF1A2F78490015982C /* APCScheduleExpressionEnumeratorTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APCScheduleExpressionEnumeratorTests.m; sourceTree = "<group>"; };
 		F5F129E01A2F78490015982C /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F5F12B1B1A2F78AE0015982C /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F5F12B221A2F861F0015982C /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
@@ -1797,7 +1795,6 @@
 		36EE894F1A2FEFD700AEA9E6 /* APCScheduleExpressionTests */ = {
 			isa = PBXGroup;
 			children = (
-				F5F129DF1A2F78490015982C /* APCScheduleExpressionEnumeratorTests.m */,
 				F5F129DA1A2F78490015982C /* APCScheduleExpressionListSelectorTests.m */,
 				F5F129DD1A2F78490015982C /* APCScheduleExpressionParserTests.m */,
 				F5F129DC1A2F78490015982C /* APCScheduleExpressionPointSelectorTests.m */,
@@ -3955,7 +3952,6 @@
 				FF44E51B1C1B94A700F07DA9 /* APCTaskResultArchiverTests.m in Sources */,
 				CB37461B1D36CC3600263F34 /* NSDateCategoryTests.m in Sources */,
 				FF94698A1C1A2F0900CF7075 /* APCScheduleExpressionListSelectorTests.m in Sources */,
-				CBC2593B1C5838940091308E /* APCScheduleExpressionEnumeratorTests.m in Sources */,
 				803237A61C6E8A6E00208365 /* APCFudgeTestsToKnowAboutSwiftByAddingASwiftTestCase.swift in Sources */,
 				0833AE1E1A76C016001D8AA0 /* (null) in Sources */,
 				CBD5DBF61C5806AD00AD654E /* APCTasksReminderManagerTests.m in Sources */,
