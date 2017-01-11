@@ -159,7 +159,7 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
         self.emailTextField.enabled = NO;
     }
     
-    self.profileImage = [UIImage imageWithData:self.user.profileImage];
+    self.profileImage = self.user.profileImage;
     if (self.profileImage) {
         [self.profileImageButton setImage:self.profileImage forState:UIControlStateNormal];
     } else {
@@ -1327,7 +1327,7 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
     
     self.profileImage = image;
     [self.profileImageButton setImage:image forState:UIControlStateNormal];
-    self.user.profileImage = UIImagePNGRepresentation(image);
+    self.user.profileImage = image;
     picker.delegate = nil;
     [picker dismissViewControllerAnimated:YES completion:nil];
 }
@@ -1366,7 +1366,7 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
     }
     
     if (self.profileImage) {
-        self.user.profileImage = UIImageJPEGRepresentation(self.profileImage, 1.0);
+        self.user.profileImage = self.profileImage;
     }
     
     for (NSUInteger j=0; j<self.items.count; j++) {

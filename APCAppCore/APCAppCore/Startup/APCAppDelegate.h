@@ -39,6 +39,8 @@
 #import "APCConsentTask.h"
 #import "APCDataUploader.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 extern NSUInteger   const kTheEntireDataModelOfTheApp;
 static NSString*    const kDatabaseName                     = @"db.sqlite";
 
@@ -106,8 +108,8 @@ extern NSString *const kNewsFeedStoryBoardKey;
 - (NSUInteger)obtainPreviousVersion;
 
 //Default bundle for resources and storyboards
-- (NSBundle*)resourceBundle;
-- (NSString*)pathForResource:(NSString*)resourceName ofType:(NSString*)resourceType;
+- (NSBundle * _Nonnull)resourceBundle;
+- (NSString * _Nullable)pathForResource:(NSString * _Nonnull)resourceName ofType:(NSString * _Nonnull)resourceType;
 
 //SetupMethods
 - (void) setUpInitializationOptions;
@@ -156,3 +158,5 @@ extern NSString *const kNewsFeedStoryBoardKey;
 - (void) clearPreviousUserData;
 
 @end
+
+NS_ASSUME_NONNULL_END
