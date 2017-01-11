@@ -321,30 +321,11 @@ static NSString * const kRegularExpressionPatternMatchingUUIDs = (@"[a-fA-F0-9]{
     }
 
     /*
-     Convert stringified ints and bools to their real values.
-
-     Very commonly, we have strings that actually contains integers or
-     Booleans -- as answers to multiple-choice questions, say. However,
-     much earlier in this process, they got converted to strings. This
-     seems to be a core feature of ResearchKit. But there's still value
-     in them being numeric or Boolean answers. So try to convert each
-     item to an integer or Boolean. If we can't, just call our master
-     -safe: method to make sure we can serialize it.
+     If this is a string then pass the string.
      */
     else if ([sourceObject isKindOfClass: [NSString class]])
     {
-        result = [self extractIntOrBoolFromString: sourceObject];
-
-        if (result == nil)
-        {
-            // If we couldn't numeric-ify it, use the original string.
-            result = sourceObject;
-        }
-        else
-        {
-            // Numericification worked.
-            // Accept the object we got from -extractIntOrBoolFromString.
-        }
+        result = sourceObject;
     }
 
 
@@ -396,14 +377,12 @@ static NSString * const kRegularExpressionPatternMatchingUUIDs = (@"[a-fA-F0-9]{
 
     if (itemAsString.length > 0)
     {
-        if ([itemAsString compare: @"no" options: NSCaseInsensitiveSearch] == NSOrderedSame ||
-            [itemAsString compare: @"false" options: NSCaseInsensitiveSearch] == NSOrderedSame)
+        if ([itemAsString compare: @"false" options: NSCaseInsensitiveSearch] == NSOrderedSame)
         {
             result = @(NO);
         }
 
-        else if ([itemAsString compare: @"yes" options: NSCaseInsensitiveSearch] == NSOrderedSame ||
-                 [itemAsString compare: @"true" options: NSCaseInsensitiveSearch] == NSOrderedSame)
+        else if ([itemAsString compare: @"true" options: NSCaseInsensitiveSearch] == NSOrderedSame)
         {
             result = @(YES);
         }

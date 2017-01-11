@@ -110,13 +110,14 @@ static NSString * const kAPCBlogUrlKey   = @"BlogUrlKey";
         NSMutableArray *readPosts = [[NSMutableArray alloc] initWithArray:self.readPosts];
         [readPosts addObject:postURL];
         self.readPosts = [NSArray arrayWithArray:readPosts];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kAPCNewsFeedUpdateNotification object:self];
     }
 }
 
 - (NSUInteger)unreadPostsCount
 {
     NSUInteger totalCount = (self.feedPosts) ? [self.feedPosts count] : 0;
-    NSUInteger readCount = (self.readPosts) ? [self.readPosts count] : 0;
+    NSUInteger readCount = (self.readPosts) ? MIN([self.readPosts count], totalCount)  : 0;
     
     NSUInteger unreadCount = totalCount - readCount;
     
