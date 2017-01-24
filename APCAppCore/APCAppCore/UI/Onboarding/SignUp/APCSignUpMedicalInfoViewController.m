@@ -188,8 +188,8 @@
                 field.textAlignnment = NSTextAlignmentRight;
                 field.detailDiscloserStyle = YES;
                 
-                if (self.user.sleepTime) {
-                    field.date = self.user.sleepTime;
+                if (self.user.wakeUpTime) {
+                    field.date = self.user.wakeUpTime;
                 } else {
                     field.date = [[NSCalendar currentCalendar] dateBySettingHour:7
                                                                           minute:0
@@ -218,8 +218,8 @@
                 field.textAlignnment = NSTextAlignmentRight;
                 field.detailDiscloserStyle = YES;
                 
-                if (self.user.wakeUpTime) {
-                    field.date = self.user.wakeUpTime;
+                if (self.user.sleepTime) {
+                    field.date = self.user.sleepTime;
                 } else {
                     field.date = [[NSCalendar currentCalendar] dateBySettingHour:21
                                                                           minute:30
