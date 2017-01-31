@@ -53,6 +53,7 @@ static NSString * const kStartDateKey               = @"startDate";
 static NSString * const kEndDateKey                 = @"endDate";
 static NSString * const kUserInfoKey                = @"userInfo";
 static NSString * const kAnswerKey                  = @"answer";
+static NSString * const kDateAnswerKey              = @"dateAnswer";
 
 //
 //    General-Use Dictionary Keys
@@ -382,7 +383,7 @@ static  NSString  *const  kSpatialSpanMemoryTouchSampleIsCorrectKey     = @"Memo
     // a specific date format per sage bridge documentation
     NSDictionary* dateFormatterForKeys = nil;
     if (result.questionType == ORKQuestionTypeDate) {
-        dateFormatterForKeys = @{ kAnswerKey: ORKResultDateFormatter() };
+        dateFormatterForKeys = @{ kAnswerKey: ORKResultDateFormatter(), kDateAnswerKey: ORKResultDateFormatter() };
     }
     
     NSDictionary *propertiesToSave = [result dictionaryWithValuesForKeys: propertyNames];
