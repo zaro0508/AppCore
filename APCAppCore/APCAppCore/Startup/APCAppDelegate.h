@@ -127,6 +127,8 @@ extern NSString *const kNewsFeedStoryBoardKey;
 - (NSDictionary *)configureTasksForActivities;
 - (BOOL)hideEmailOnWelcomeScreen;
 
+- (NSURL *)privacyPolicyLinkURL;
+
 //To be called from Datasubstrate
 - (void) setUpCollectors;
 
