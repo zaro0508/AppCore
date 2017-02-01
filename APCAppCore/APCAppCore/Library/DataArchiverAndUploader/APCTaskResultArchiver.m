@@ -184,7 +184,7 @@ static  NSString  *const  kSpatialSpanMemoryTouchSampleIsCorrectKey     = @"Memo
 {
     dataResult.identifier = dataResult.identifier ? : (stepResult.identifier ? : [NSUUID UUID].UUIDString);
     NSString *fileName = [dataResult.identifier stringByAppendingString:@"_data"];
-    [archive insertJSONDataIntoArchive:dataResult.data filename:fileName];
+    [archive insertJSONDataIntoArchive:dataResult.data filename:fileName createdOn:stepResult.startDate];
     return YES;
 }
 
@@ -251,7 +251,7 @@ static  NSString  *const  kSpatialSpanMemoryTouchSampleIsCorrectKey     = @"Memo
     
     NSDictionary *serializableData = [APCJSONSerializer serializableDictionaryFromSourceDictionary: rawTappingResults];
     
-    [archive insertDictionaryIntoArchive:serializableData filename:result_filename];
+    [archive insertDictionaryIntoArchive:serializableData filename:result_filename createdOn:result.startDate];
     return YES;
 }
 
@@ -310,7 +310,7 @@ static  NSString  *const  kSpatialSpanMemoryTouchSampleIsCorrectKey     = @"Memo
     
     NSDictionary  *serializableData = [APCJSONSerializer serializableDictionaryFromSourceDictionary: memoryGameResults];
 
-    [archive insertDictionaryIntoArchive:serializableData filename:result_filename];
+    [archive insertDictionaryIntoArchive:serializableData filename:result_filename createdOn:result.startDate];
     return YES;
 }
 
@@ -395,7 +395,7 @@ static  NSString  *const  kSpatialSpanMemoryTouchSampleIsCorrectKey     = @"Memo
                                                 stepIdentifier:nil
                                                      extension:@"json"];
     
-    [archive insertDictionaryIntoArchive:serializableDictionary filename:filename];
+    [archive insertDictionaryIntoArchive:serializableDictionary filename:filename createdOn:result.startDate];
     return YES;
 }
 
