@@ -89,8 +89,10 @@
  @param     jsonData            JSON data to be inserted into the zip archive.
  
  @param     filename            Filename for the JSON to be included without path extension
- */
-- (void)insertJSONDataIntoArchive:(NSData *)jsonData filename:(NSString *)filename;
+
+ @param     createdOn           File creation timestamp to use in info.json
+*/
+- (void)insertJSONDataIntoArchive:(NSData *)jsonData filename:(NSString *)filename createdOn:(NSDate *)createdOn;
 
 /**
  Converts a dictionary into json data and inserts into the archive.
@@ -98,8 +100,10 @@
  @param     dictionary              Dictionary to be inserted into the zip archive.
  
  @param     filename                Filename for the json data to be included without path extension
- */
-- (void)insertDictionaryIntoArchive:(NSDictionary *)dictionary filename: (NSString *)filename;
+
+ @param     createdOn               File creation timestamp to use in info.json
+*/
+- (void)insertDictionaryIntoArchive:(NSDictionary *)dictionary filename: (NSString *)filename createdOn: (NSDate *)createdOn;
 
 
 /**
@@ -115,7 +119,7 @@
 /**
  Inserts the data from the file at the url.
  
- @param     url                     URL where the file exists
+ @param     url                     URL where the file exists. The original file's creation date will be used as the creation timestamp in info.json
  
  @param     filename                Filename for the json data to be included without path extension (path extension will be preserved from the url).
  */
@@ -128,9 +132,9 @@
  
  @param     filename                Filename for the data to be included without path extension (path extension will be preserved from the url)
  
- @param     extension               File extension
+ @param     createdOn               File creation timestamp to use in info.json
  */
-- (void)insertDataIntoArchive :(NSData *)data filename: (NSString *)filename;
+- (void)insertDataIntoArchive :(NSData *)data filename: (NSString *)filename createdOn: (NSDate *)createdOn;
 
 /**
  Inserts an info.json file into the archive.

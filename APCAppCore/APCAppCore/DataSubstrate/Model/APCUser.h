@@ -55,6 +55,7 @@ typedef NS_ENUM(NSInteger, APCUserConsentSharingScope) {
 /*********************************************************************************/
 
 @property (nonatomic, strong, nullable) NSString * name;
+@property (nonatomic, strong, nullable) NSString * familyName;
 
 @property (nonatomic, strong, nullable) NSString * firstName DEPRECATED_ATTRIBUTE;
 @property (nonatomic, strong, nullable) NSString * lastName DEPRECATED_ATTRIBUTE;

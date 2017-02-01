@@ -150,24 +150,29 @@ static NSString * kJsonInfoFilename                 = @"info.json";
 
 - (void)insertDataAtURLIntoArchive: (NSURL*) url fileName: (NSString *) filename
 {
+    NSDictionary *fileAttrs = [[NSFileManager defaultManager] attributesOfItemAtPath:url.path error:nil];
+    NSDate *createdOn = nil;
+    if (fileAttrs) {
+        createdOn = [fileAttrs fileCreationDate];
+    }
     NSData *dataToInsert = [NSData dataWithContentsOfURL:url];
-    [self insertDataIntoArchive:dataToInsert filename:filename];
+    [self insertDataIntoArchive:dataToInsert filename:filename createdOn:createdOn];
 }
 
-- (void)insertJSONDataIntoArchive:(NSData *)jsonData filename:(NSString *)filename
+- (void)insertJSONDataIntoArchive:(NSData *)jsonData filename:(NSString *)filename createdOn:(NSDate *)createdOn
 {
     if (jsonData !=nil) {
-        [self insertDataIntoArchive:jsonData filename:filename];
+        [self insertDataIntoArchive:jsonData filename:filename createdOn:createdOn];
     }
 }
 
 // Converts the dictionary into json and inserts into the archive using the given filename
 - (void)insertIntoArchive:(NSDictionary *)dictionary filename: (NSString *)filename
 {
-    [self insertDictionaryIntoArchive:dictionary filename:filename];
+    [self insertDictionaryIntoArchive:dictionary filename:filename createdOn:[NSDate date]];
 }
 
-- (void)insertDictionaryIntoArchive:(NSDictionary *)dictionary filename: (NSString *)filename
+- (void)insertDictionaryIntoArchive:(NSDictionary *)dictionary filename: (NSString *)filename createdOn:(NSDate *)createdOn
 {
 
     NSError * serializationError;
@@ -180,14 +185,14 @@ static NSString * kJsonInfoFilename                 = @"info.json";
         jsonData = [NSJSONSerialization dataWithJSONObject:newDictionary options:NSJSONWritingPrettyPrinted error:&serializationError];
         
         if (jsonData !=nil) {
-            [self insertDataIntoArchive:jsonData filename:filename];
+            [self insertDataIntoArchive:jsonData filename:filename createdOn:createdOn];
         }else{
             APCLogError2(serializationError);
         }
     }
 }
 
-- (void)insertDataIntoArchive :(NSData *)data filename: (NSString *)filename
+- (void)insertDataIntoArchive :(NSData *)data filename: (NSString *)filename createdOn:(NSDate *)createdOn
 {
     [self.zipEntries addObject: [ZZArchiveEntry archiveEntryWithFileName: filename
                                                                 compress:YES
@@ -199,8 +204,11 @@ static NSString * kJsonInfoFilename                 = @"info.json";
     
     //add the fileInfoEntry
     NSString *extension = [filename pathExtension] ? : kJsonPathExtension;
+    if (!createdOn) {
+        createdOn = [NSDate date]; // fallback, never exact and often wildly wrong
+    }
     NSDictionary *fileInfoEntry = @{ kFileInfoNameKey: filename,
-                                     kFileInfoTimeStampKey: [NSDate date].toStringInISO8601Format,
+                                     kFileInfoTimeStampKey: createdOn.toStringInISO8601Format,
                                      kFileInfoContentTypeKey: [self contentTypeForFileExtension:extension] };
     
     [self.filesList addObject:fileInfoEntry];
@@ -228,7 +236,7 @@ static NSString * kJsonInfoFilename                 = @"info.json";
             [self.infoDict setObject:isoCreatedString forKey:kSurveyCreatedOnKey];
         }
         
-        [self insertDictionaryIntoArchive:self.infoDict filename:kJsonInfoFilename];
+        [self insertDictionaryIntoArchive:self.infoDict filename:kJsonInfoFilename createdOn:nil];
         
         NSError * error;
         if (![self.zipArchive updateEntries:self.zipEntries error:&error]) {

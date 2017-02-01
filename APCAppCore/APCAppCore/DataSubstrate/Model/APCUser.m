@@ -46,6 +46,7 @@ static NSString *const kSavedDataGroupsKey = @"SavedDataGroups";
 static NSString *const kSavedSubpopulationGuidKey = @"SavedSubpopulationGuid";
 
 static NSString *const kNamePropertytName = @"name";
+static NSString *const kFamilyNamePropertytName = @"familyName";
 static NSString *const kFirstNamePropertytName = @"firstName";
 static NSString *const kLastNamePropertyName = @"lastName";
 static NSString *const kEmailPropertyName = @"email";
@@ -222,6 +223,21 @@ static NSString *const kSignedInKey = @"SignedIn";
     }
     else {
         [APCKeychainStore removeValueForKey:kNamePropertytName];
+    }
+}
+
+- (NSString *)familyName
+{
+    return [APCKeychainStore stringForKey:kFamilyNamePropertytName];
+}
+
+- (void)setFamilyName:(NSString *)familyName
+{
+    if (familyName != nil) {
+        [APCKeychainStore setString:familyName forKey:kFamilyNamePropertytName];
+    }
+    else {
+        [APCKeychainStore removeValueForKey:kFamilyNamePropertytName];
     }
 }
 
