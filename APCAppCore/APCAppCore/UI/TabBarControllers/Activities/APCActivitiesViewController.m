@@ -87,6 +87,8 @@ static CGFloat const kTableViewSectionHeaderHeight = 77;
 
 @end
 
+static NSString * const kAPCAlertTitleKeepGoing                 = @"Good job!";
+static NSString * const kAPCAlertMessageKeepGoing               = @"It is helpful when activities are completed in succession. Please consider completing remaining activities.";
 
 @implementation APCActivitiesViewController
 
@@ -114,6 +116,12 @@ static CGFloat const kTableViewSectionHeaderHeight = 77;
         // make sure we know the state of CoreMotion permissions so it's available when we need it
         [self.permissionManager requestForPermissionForType:kAPCSignUpPermissionsTypeCoremotion withCompletion:nil];
     }
+    
+    [self setupNotifications];
+    
+    if (self.user.isConsented) {
+        [self reloadData];
+    }
 }
 
 - (void) viewWillAppear: (BOOL) animated
@@ -124,9 +132,6 @@ static CGFloat const kTableViewSectionHeaderHeight = 77;
         self.showingConsentFlow = NO;
         [self showReconsentIfNecessary];
     }
-    else {
-        [self reloadData];
-    }
     
     [self setUpNavigationBarAppearance];
     
@@ -134,43 +139,39 @@ static CGFloat const kTableViewSectionHeaderHeight = 77;
 }
 
 - (void) reloadData {
-    [self setupNotifications];
     [self reloadTasksFromCoreData];
     [self checkForAndMaybeRespondToSystemDateChange];
-}
-
-- (void) viewDidDisappear: (BOOL) animated
-{
-    [super viewDidDisappear: animated];
-
-    [self cancelNotifications];
 }
 
 - (void) setupNotifications
 {
     // Fires when one day rolls over to the next.
     [[NSNotificationCenter defaultCenter] addObserver: self
-                                             selector: @selector (checkForAndMaybeRespondToSystemDateChange)
+                                             selector: @selector (handleSystemDateChangeNotification)
                                                  name: APCDayChangedNotification
                                                object: nil];
 
     // ...but that only happens every minute or so.  This lets us respond much faster.
     [[NSNotificationCenter defaultCenter] addObserver: self
-                                             selector: @selector (checkForAndMaybeRespondToSystemDateChange)
+                                             selector: @selector (handleSystemDateChangeNotification)
                                                  name: UIApplicationWillEnterForegroundNotification
                                                object: nil];
 
     // ...but that only happens every minute or so.  This lets us respond much faster.
     [[NSNotificationCenter defaultCenter] addObserver: self
-                                             selector: @selector (checkForAndMaybeRespondToSystemDateChange)
+                                             selector: @selector (handleSystemDateChangeNotification)
                                                  name: UIApplicationDidBecomeActiveNotification
                                                object: nil];
+    
+    if (self.appDelegate.promptUserToContinueActivities) {
+        // Upon completion of activity, check to see if we should show an alert encouraging user to continue
+        [[NSNotificationCenter defaultCenter] addObserver: self
+                                                 selector: @selector (handleActivityCompleteNotification)
+                                                     name: APCActivityCompletionNotification
+                                                   object: nil];
+    }
 }
 
-- (void) cancelNotifications
-{
-    [[NSNotificationCenter defaultCenter] removeObserver: self];
-}
 
 /**
  Sets up the pull-to-refresh control at the top of the TableView.
@@ -204,13 +205,13 @@ static CGFloat const kTableViewSectionHeaderHeight = 77;
 - (void) checkForAndMaybeRespondToSystemDateChange
 {
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-
+        
         NSDate *now = self.dateWeAreUsingForToday;
-
+        
         if (self.lastKnownSystemDate == nil || ! [now isSameDayAsDate: self.lastKnownSystemDate])
         {
             APCLogDebug (@"Handling date changes (Activities): Last-known date has changed. Resetting dates, refreshing server content, and refreshing UI.");
-
+            
             self.lastKnownSystemDate = now;
             [self reloadTasksFromCoreData];
             [self fetchNewestSurveysAndTasksFromServer: nil];
@@ -218,7 +219,91 @@ static CGFloat const kTableViewSectionHeaderHeight = 77;
     }];
 }
 
+- (void)handleSystemDateChangeNotification
+{
+    /*
+     only do this if we're currently visible. Adding this check after removing notification
+     observer behavior: this class used to start and stop listening whenver the view appeared
+     and disappeared. Had to change that as we now rely on APCActivityCompletionNotification
+     notification while we're not visible
+     */
+    
+    if (self.isViewLoaded && self.view.window) {
+        [self checkForAndMaybeRespondToSystemDateChange];
+    }
+}
 
+// ---------------------------------------------------------
+#pragma mark - Responding to completion of activity
+// ---------------------------------------------------------
+
+- (void) handleActivityCompleteNotification
+{
+    /*
+     We reload data below asynchronously. So our countOfRemainingTasksToday will not be
+     up to date as the activity the user just completed will not be marked completed yet.
+     So, we check to see if our remaining count is more than 1 (instead of more than 0).
+     */
+    
+    if (self.countOfRemainingTasksToday > 1) {
+        
+        // show an alert prompting them to continue doing activities. Delay so task
+        // view controller has time to dismiss
+        [self performSelector:@selector(presentContinueActivitiesAlert) withObject:nil afterDelay:0.4];
+        
+        // pass nil for spinnerController because we don't have/want one since we're
+        // showing an alert controller
+        [self actuallyReloadTasksFromCoreDataWithSpinnerController:nil];
+    }
+    else {
+        // since we're not showing an alert controller, we DO want to show the spinner
+        // so we call reloadTasksFromCoreData instead of actuallyReloadTasksFromCoreDataWithSpinnerController
+        // Delay to give the task view controller time to dismiss
+        [self performSelector:@selector(reloadTasksFromCoreData) withObject:nil afterDelay:0.4];
+    }
+}
+
+- (void)presentContinueActivitiesAlert
+{
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedStringWithDefaultValue(kAPCAlertTitleKeepGoing, @"APCAppCore", APCBundle(), kAPCAlertTitleKeepGoing, @"") message:kAPCAlertMessageKeepGoing preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction *continueAction = [UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"Continue", @"APCAppCore", APCBundle(), @"Continue", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * __unused action) {
+        // start our next activity, delay to allow time for alert to dismiss
+        [self performSelector:@selector(startNextActivity) withObject:nil afterDelay:0.2];
+    }];
+    [alertController addAction:continueAction];
+    
+    UIAlertAction *dismiss = [UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"Dismiss", @"APCAppCore", APCBundle(), @"Dismiss", @"") style:UIAlertActionStyleCancel handler:^(UIAlertAction *__unused action) {
+    }];
+    [alertController addAction:dismiss];
+
+    [self.navigationController presentViewController:alertController animated:YES completion:nil];
+}
+
+- (void)startNextActivity {
+
+    // get first non-completed task
+    APCTaskGroup *taskToDo = nil;
+    APCActivitiesViewSection *section = self.todaySection;
+    for (APCTaskGroup *group in section.taskGroups) {
+        
+        // use .dayAfter here because it returns a date object with normalized time components
+        // so we can compare it easily to today without worrying about time
+        if ([group.dateFullyCompleted.dayAfter isEqualToDate:[NSDate date].dayAfter]) {
+            // this one was done today
+            continue;
+        }
+        else {
+            taskToDo = group;
+            break;
+        }
+    }
+    
+    if (taskToDo) {
+        APCBaseTaskViewController *viewControllerToShowNext = [self viewControllerToShowForTaskGroup:taskToDo];
+        [self presentViewControllerToShowNext:viewControllerToShowNext];
+    }
+}
 
 // ---------------------------------------------------------
 #pragma mark - Displaying the table cells
@@ -301,23 +386,30 @@ static CGFloat const kTableViewSectionHeaderHeight = 77;
     [tableView deselectRowAtIndexPath: indexPath
                              animated: YES];
 
+    
+    [self checkForAndMaybeRespondToSystemDateChange];
+
     if ([self allowSelectionAtIndexPath: indexPath])
     {
         APCBaseTaskViewController *viewControllerToShowNext = [self viewControllerToShowForCellAtIndexPath: indexPath];
+        [self presentViewControllerToShowNext:viewControllerToShowNext];
+    }
+}
 
-        if (viewControllerToShowNext != nil)
+- (void)presentViewControllerToShowNext:(APCBaseTaskViewController*)taskViewController {
+    
+    if (taskViewController != nil)
+    {
+        if ([self.permissionManager isPermissionsGrantedForType:taskViewController.requiredPermission])
         {
-            if ([self.permissionManager isPermissionsGrantedForType:viewControllerToShowNext.requiredPermission])
-            {
-                [self presentViewController: viewControllerToShowNext
-                                   animated: YES
-                                 completion: nil];
-            } else
-            {
-                NSError *permissionsError = [self.permissionManager permissionDeniedErrorForType:viewControllerToShowNext.requiredPermission];
-                [self presentSettingsAlert:permissionsError];
-                APCLogError2(permissionsError);
-            }
+            [self presentViewController: taskViewController
+                               animated: YES
+                             completion: nil];
+        } else
+        {
+            NSError *permissionsError = [self.permissionManager permissionDeniedErrorForType:taskViewController.requiredPermission];
+            [self presentSettingsAlert:permissionsError];
+            APCLogError2(permissionsError);
         }
     }
 }
@@ -348,24 +440,29 @@ static CGFloat const kTableViewSectionHeaderHeight = 77;
  use these methods, not just -cellForRowAtIndexPath:.
  */
 
-- (APCBaseTaskViewController *) viewControllerToShowForCellAtIndexPath: (NSIndexPath *) indexPath
-{
+- (APCBaseTaskViewController *) viewControllerToShowForTaskGroup:(APCTaskGroup *) taskGroup {
+    
     APCBaseTaskViewController *viewController   = nil;
-    APCTaskGroup *taskGroup                     = [self taskGroupForCellAtIndexPath: indexPath];
     APCTask *task                               = taskGroup.task;
     NSString *viewControllerClassName           = task.taskClassName;
-
+    
     // This call is safe, because it returns nil if such a class doesn't exist:
     Class viewControllerClass = NSClassFromString (viewControllerClassName);
-
+    
     if (viewControllerClass != nil &&
         viewControllerClass != [NSNull class] &&
         [viewControllerClass isSubclassOfClass: [APCBaseTaskViewController class]])
     {
         viewController = [viewControllerClass configureTaskViewController:taskGroup];
     }
-
+    
     return viewController;
+}
+
+- (APCBaseTaskViewController *) viewControllerToShowForCellAtIndexPath: (NSIndexPath *) indexPath
+{
+    APCTaskGroup *taskGroup = [self taskGroupForCellAtIndexPath: indexPath];
+    return [self viewControllerToShowForTaskGroup:taskGroup];
 }
 
 - (APCActivitiesViewSection *) todaySection
@@ -510,16 +607,10 @@ static CGFloat const kTableViewSectionHeaderHeight = 77;
 - (void) updateWholeUI
 {
     [self.refreshControl endRefreshing];
-    [self performSelector:@selector(dismiss) withObject:self afterDelay:0.5];
     [self configureNoTasksView];
     [self updateBadge];
     [self.tableView reloadData];
     
-}
-
-- (void) dismiss
-{
-    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void) updateBadge
@@ -563,7 +654,6 @@ static CGFloat const kTableViewSectionHeaderHeight = 77;
 
 - (void) reloadTasksFromCoreData
 {
-    self.isFetchingFromCoreDataRightNow = YES;
     APCSpinnerViewController *spinnerController = [[APCSpinnerViewController alloc] init];
     [self presentViewController:spinnerController animated:YES completion:^{
         [self actuallyReloadTasksFromCoreDataWithSpinnerController:spinnerController];
@@ -572,6 +662,9 @@ static CGFloat const kTableViewSectionHeaderHeight = 77;
 
 - (void)actuallyReloadTasksFromCoreDataWithSpinnerController:(APCSpinnerViewController *)spinnerController
 {
+    
+    self.isFetchingFromCoreDataRightNow = YES;
+
     NSPredicate *filterForOptionalTasks = [NSPredicate predicateWithFormat: @"%K == %@",
                                            NSStringFromSelector(@selector(taskIsOptional)),
                                            @(YES)];
@@ -699,10 +792,12 @@ static CGFloat const kTableViewSectionHeaderHeight = 77;
              weakSelf.isFetchingFromCoreDataRightNow = NO;
              [weakSelf updateWholeUI];
              
-             // don't forget to dismiss the spinner!
-             dispatch_async(dispatch_get_main_queue(), ^{
-                 [spinnerController dismissViewControllerAnimated:YES completion:nil];
-             });
+             if (spinnerController) {
+                 // don't forget to dismiss the spinner!
+                 dispatch_async(dispatch_get_main_queue(), ^{
+                     [spinnerController dismissViewControllerAnimated:YES completion:nil];
+                 });
+             }
 
          }];  // second fetch:  optional tasks
      }];  // first fetch:  required tasks, for a range of dates
