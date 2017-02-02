@@ -112,10 +112,17 @@ static NSString * const kAPCAlertMessageKeepGoing               = @"It is helpfu
     
     self.permissionManager = [[APCPermissionsManager alloc] init];
 
-    if ([self.permissionManager.signUpPermissionTypes containsObject:@(kAPCSignUpPermissionsTypeCoremotion)]) {
-        // make sure we know the state of CoreMotion permissions so it's available when we need it
-        [self.permissionManager requestForPermissionForType:kAPCSignUpPermissionsTypeCoremotion withCompletion:nil];
-    }
+    /* 
+     The below code is failing because signUpPermissionTypes is nil. This is because of the init method above
+     being used (should use initWithHealthKitCharacteristicTypesToRead instead). It's commented out now because
+     this requestForPermission for coreMotion is no longer needed. A fix has been made in didSelectRow to deal
+     with coreMotion perms. See comment there.
+     */
+    
+//    if ([self.permissionManager.signUpPermissionTypes containsObject:@(kAPCSignUpPermissionsTypeCoremotion)]) {
+//        // make sure we know the state of CoreMotion permissions so it's available when we need it
+//        [self.permissionManager requestForPermissionForType:kAPCSignUpPermissionsTypeCoremotion withCompletion:nil];
+//    }
     
     [self setupNotifications];
     
@@ -407,9 +414,43 @@ static NSString * const kAPCAlertMessageKeepGoing               = @"It is helpfu
                              completion: nil];
         } else
         {
-            NSError *permissionsError = [self.permissionManager permissionDeniedErrorForType:taskViewController.requiredPermission];
-            [self presentSettingsAlert:permissionsError];
-            APCLogError2(permissionsError);
+            /*
+             https://sagebionetworks.jira.com/browse/BRIDGE-1258 - there were two problems associated with permissions:
+             
+             When the user declines permission for something (or fails to grant it) during the on-boarding process, there
+             were issues allowing the user to manually grant the permission in Settings app and making mPower aware of
+             the change.
+             
+             In the case of the coreMotion permission, the above call to isPermissionGrantedForType simply references
+             a permission state value in memory that is assigned to 'notAllowed' upon startup. This value was never
+             getting changed to 'allowed' even when the user went to their Settings app and allowed it because the
+             call to permissionManager in viewDidLoad to request this permission was failing due to a bug (see comment there)
+             
+             In the case of the other permission types...if the user never declined permission (instead, they just did not
+             grant it), then when they go to Settings app, mPower does not show up in the list of apps for that permission.
+             For instance, if user doesn't grant microphone access during onboarding and they tap the Voice Activity row,
+             the app checks for permission above and sees that it has not been granted. But, it's never been requested so
+             when they go to the Microphone section in Settings > Privacy, mPower does not show up
+             
+             To fix both these cases, we now request the permission any time the status comes back denied or not determined.
+             */
+            
+            __weak typeof(self) weakSelf = self;
+            [self.permissionManager requestForPermissionForType:taskViewController.requiredPermission withCompletion:^(BOOL granted, __unused NSError *error) {
+                if (granted) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self presentViewController: taskViewController
+                                           animated: YES
+                                         completion: nil];
+                    });
+                }else {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        NSError *permissionsError = [self.permissionManager permissionDeniedErrorForType:taskViewController.requiredPermission];
+                        [weakSelf presentSettingsAlert:permissionsError];
+                        APCLogError2(permissionsError);
+                    });
+                }
+            }];
         }
     }
 }

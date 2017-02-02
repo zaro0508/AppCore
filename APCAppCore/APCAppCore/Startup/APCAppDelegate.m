@@ -655,6 +655,15 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
     return NO;
 }
 
+- (NSURL *)privacyPolicyLinkURL
+{
+    /* Abstract implementation. Subclass to override.
+     *
+     * Provide hosted URL to Privacy Policy.
+     */
+    return nil;
+}
+
 /*********************************************************************************/
 #pragma mark - Catastrophic startup errors
 /*********************************************************************************/
