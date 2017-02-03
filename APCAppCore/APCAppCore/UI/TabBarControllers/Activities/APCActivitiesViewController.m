@@ -170,13 +170,11 @@ static NSString * const kAPCAlertMessageKeepGoing               = @"It is helpfu
                                                  name: UIApplicationDidBecomeActiveNotification
                                                object: nil];
     
-    if (self.appDelegate.promptUserToContinueActivities) {
-        // Upon completion of activity, check to see if we should show an alert encouraging user to continue
-        [[NSNotificationCenter defaultCenter] addObserver: self
-                                                 selector: @selector (handleActivityCompleteNotification)
-                                                     name: APCActivityCompletionNotification
-                                                   object: nil];
-    }
+    // Upon completion of activity, check to see if we should show an alert encouraging user to continue
+    [[NSNotificationCenter defaultCenter] addObserver: self
+                                             selector: @selector (handleActivityCompleteNotification)
+                                                 name: APCActivityCompletionNotification
+                                               object: nil];
 }
 
 
@@ -252,7 +250,7 @@ static NSString * const kAPCAlertMessageKeepGoing               = @"It is helpfu
      So, we check to see if our remaining count is more than 1 (instead of more than 0).
      */
     
-    if (self.countOfRemainingTasksToday > 1) {
+    if (self.appDelegate.promptUserToContinueActivities && self.countOfRemainingTasksToday > 1) {
         
         // show an alert prompting them to continue doing activities. Delay so task
         // view controller has time to dismiss
