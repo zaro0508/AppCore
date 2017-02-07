@@ -75,23 +75,23 @@ static NSString* const kBaseEmailAddressForExternalIdKey = @"baseEmailAddressFor
     {
         NSParameterAssert(self.email);
         NSParameterAssert(self.password);
-        [SBBComponent(SBBAuthManager) signUpWithEmail: self.email
-                                             username: self.email
-                                             password: self.password
-                                           dataGroups:dataGroups
-                                           completion: ^(NSURLSessionTask * __unused task,
-                                                         id __unused responseObject,
-                                                         NSError *error)
-         {
-             dispatch_async(dispatch_get_main_queue(), ^{
-                 if (!error) {
-                     APCLogEventWithData(kNetworkEvent, (@{@"event_detail":@"User Signed Up"}));
-                 }
-                 if (completionBlock) {
-                     completionBlock(error);
-                 }
-             });
-         }];
+        
+        SBBSignUp *signUp = [[SBBSignUp alloc] init];
+        signUp.email = self.email;
+        signUp.password = self.password;
+        signUp.dataGroups = [NSSet setWithArray:dataGroups];
+        signUp.externalId = self.externalId;
+        
+        [SBBComponent(SBBAuthManager) signUpStudyParticipant:signUp completion:^(NSURLSessionTask *task __unused, id responseObject __unused, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (!error) {
+                    APCLogEventWithData(kNetworkEvent, (@{@"event_detail":@"User Signed Up"}));
+                }
+                if (completionBlock) {
+                    completionBlock(error);
+                }
+            });
+        }];
     }
 }
 
