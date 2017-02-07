@@ -72,7 +72,8 @@ static NSDictionary * localAppearanceDictionary;
              kTertiaryPurpleColorKey : [UIColor colorWithRed:0.574 green:0.252 blue:0.829 alpha:1.000],
              kTertiaryGrayColorKey : [UIColor colorWithRed:157/255.0f green:157/255.0f blue:157/255.0f alpha:1.000],
              kBorderLineColor: [UIColor colorWithWhite:0.749 alpha:1.000],
-             kPrimaryNavBarColorKey : [UIColor whiteColor]
+             kPrimaryNavBarColorKey : [UIColor whiteColor],
+             kCheckmarkGreenColorKey : [UIColor colorWithRed:77/255.0f green:217/255.0f blue:99/255.0f alpha:1.000]
              };
 }
 

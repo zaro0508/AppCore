@@ -139,6 +139,11 @@
     return [APCAppearanceInfo valueForAppearanceKey:kPrimaryNavBarColorKey];
 }
 
++ (UIColor *)checkmarkGreenColor
+{
+    return [APCAppearanceInfo valueForAppearanceKey:kCheckmarkGreenColorKey];
+}
+
 + (UIColor *)colorForTaskId:(NSString *)taskId
 {
     return [APCAppearanceInfo valueForAppearanceKey:taskId];
