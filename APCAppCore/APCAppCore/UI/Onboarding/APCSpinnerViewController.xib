@@ -41,11 +41,11 @@
                         <constraint firstAttribute="height" constant="100" id="nuf-Fm-rlg"/>
                     </constraints>
                 </view>
-                <imageView hidden="YES" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" image="Completion-Check" translatesAutoresizingMaskIntoConstraints="NO" id="hcy-8v-pz5">
-                    <rect key="frame" x="116" y="240" width="88" height="88"/>
+                <imageView hidden="YES" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" image="Completion-Check" translatesAutoresizingMaskIntoConstraints="NO" id="hcy-8v-pz5">
+                    <rect key="frame" x="141.5" y="265.5" width="37" height="37"/>
                     <constraints>
-                        <constraint firstAttribute="height" constant="88" id="DUY-9J-z3Q"/>
-                        <constraint firstAttribute="width" constant="88" id="Pf4-wa-Ye6"/>
+                        <constraint firstAttribute="height" constant="37" id="DUY-9J-z3Q"/>
+                        <constraint firstAttribute="width" constant="37" id="Pf4-wa-Ye6"/>
                     </constraints>
                 </imageView>
             </subviews>

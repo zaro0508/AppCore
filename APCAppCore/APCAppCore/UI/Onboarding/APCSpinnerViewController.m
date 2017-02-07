@@ -94,7 +94,6 @@
     
     [UIView animateWithDuration:0.15 animations:^{
 
-        self.activityIndicatorContainerView.backgroundColor = [UIColor checkmarkGreenColor];
         self.activityIndicatorView.alpha = 0.0;
         self.checkmarkImageView.alpha = 1.0;
     
