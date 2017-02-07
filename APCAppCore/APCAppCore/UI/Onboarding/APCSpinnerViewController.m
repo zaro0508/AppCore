@@ -35,6 +35,7 @@
 #import "APCLog.h"
 #import "UIColor+APCAppearance.h"
 #import "NSBundle+Helper.h"
+#import "UIImage+APCHelper.h"
 
 
 @implementation APCSpinnerViewController
@@ -76,6 +77,36 @@
     [super viewDidDisappear:animated];
     
     [self.activityIndicatorView stopAnimating];
+}
+
+- (void)showCheckmarkThenDismissCompletion:(void (^ __nullable)(void))completion {
+
+    [self showCheckmark];
+    [self performSelector:@selector(dismissCompletion:) withObject:completion afterDelay:1.5];
+}
+
+- (void)showCheckmark {
+    
+    UIImage *image = [UIImage imageNamed:@"Completion-Check"];
+    self.checkmarkImageView.image = image;
+    self.checkmarkImageView.alpha = 0.0;
+    self.checkmarkImageView.hidden = NO;
+    
+    [UIView animateWithDuration:0.15 animations:^{
+
+        self.activityIndicatorContainerView.backgroundColor = [UIColor checkmarkGreenColor];
+        self.activityIndicatorView.alpha = 0.0;
+        self.checkmarkImageView.alpha = 1.0;
+    
+    } completion:^(BOOL finished __unused) {
+        
+        [self.activityIndicatorView stopAnimating];
+        [self.activityIndicatorView removeFromSuperview];
+    }];
+}
+
+- (void)dismissCompletion:(void (^ __nullable)(void))completion {
+    [self.presentingViewController dismissViewControllerAnimated:NO completion:completion];
 }
 
 #pragma mark - Orientation methods

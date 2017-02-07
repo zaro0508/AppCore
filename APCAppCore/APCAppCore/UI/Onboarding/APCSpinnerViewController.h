@@ -38,7 +38,14 @@
 @property (nonatomic, weak) IBOutlet UIView *activityIndicatorContainerView;
 
 @property (nonatomic, weak) IBOutlet UIActivityIndicatorView *activityIndicatorView;
+@property (weak, nonatomic) IBOutlet UIImageView *checkmarkImageView;
 
 @property (nonatomic) BOOL landscape;
+
+/*
+ Call to replace activity indicator view with a checkmark and change background
+ color from black to green, then dismiss the view controller after a brief delay
+ */
+- (void)showCheckmarkThenDismissCompletion:(void (^ __nullable)(void))completion;
 
 @end
