@@ -103,6 +103,7 @@
     addScene(kAPCSignUpGeneralInfoStepIdentifier);
     addScene(kAPCSignUpMedicalInfoStepIdentifier);
     self.onboardingTask.customStepIncluded = addScene(kAPCSignUpCustomInfoStepIdentifier);
+    addScene(kAPCReferralCodeStepIdentifier);
     addScene(kAPCSignUpPasscodeStepIdentifier);
     addScene(kAPCSignUpPermissionsStepIdentifier);
     addScene(kAPCSignUpThankYouStepIdentifier);
@@ -183,6 +184,7 @@
     _onboardingTask.generalInfoStep = _scenes[kAPCSignUpGeneralInfoStepIdentifier].step;
     _onboardingTask.medicalInfoStep = _scenes[kAPCSignUpMedicalInfoStepIdentifier].step;
     _onboardingTask.customInfoStep = _scenes[kAPCSignUpCustomInfoStepIdentifier].step;
+    _onboardingTask.referralCodeStep = _scenes[kAPCReferralCodeStepIdentifier].step;
     _onboardingTask.passcodeStep = _scenes[kAPCSignUpPasscodeStepIdentifier].step;
     _onboardingTask.permissionsStep = _scenes[kAPCSignUpPermissionsStepIdentifier].step;
     _onboardingTask.thankyouStep = _scenes[kAPCSignUpThankYouStepIdentifier].step;

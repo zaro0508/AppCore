@@ -46,6 +46,7 @@ NSString *const kAPCSignUpThankYouStepIdentifier            = @"ThankYou";
 NSString *const kAPCSignInStepIdentifier                    = @"SignIn";
 NSString *const kAPCSignUpPermissionsPrimingStepIdentifier  = @"PermissionsPriming";
 NSString *const kAPCSignUpShareAppStepIdentifier            = @"ShareApp";
+NSString *const kAPCReferralCodeStepIdentifier              = @"ReferralCode";
 
 @implementation APCOnboardingTask
 
@@ -172,6 +173,15 @@ NSString *const kAPCSignUpShareAppStepIdentifier            = @"ShareApp";
     }
     
     return _customInfoStep;
+}
+
+- (ORKStep *)referralCodeStep
+{
+    if (!_referralCodeStep) {
+        _referralCodeStep = [[ORKStep alloc] initWithIdentifier:kAPCReferralCodeStepIdentifier];
+    }
+    
+    return _referralCodeStep;
 }
 
 - (ORKStep *)passcodeStep
