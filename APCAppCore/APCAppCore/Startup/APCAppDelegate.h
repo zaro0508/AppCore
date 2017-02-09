@@ -126,6 +126,7 @@ extern NSString *const kNewsFeedStoryBoardKey;
 - (NSArray *)allSetTextBlocks;
 - (NSDictionary *)configureTasksForActivities;
 - (BOOL)hideEmailOnWelcomeScreen;
+- (BOOL)promptUserToContinueActivities;
 
 - (NSURL *)privacyPolicyLinkURL;
 

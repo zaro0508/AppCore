@@ -646,6 +646,15 @@ static NSString*    const kAppWillEnterForegroundTimeKey    = @"APCWillEnterFore
     return NO;
 }
 
+- (BOOL)promptUserToContinueActivities
+{
+    /* Abstract implementation. Subclass to override.
+     *
+     * To show an alert to the user to continue activities after they complete an activity return YES.
+     */
+    return NO;
+}
+
 - (NSURL *)privacyPolicyLinkURL
 {
     /* Abstract implementation. Subclass to override.
