@@ -20,6 +20,9 @@
 
 @interface APCReferralCodeViewController ()
 - (void)setupAppearance;
+- (NSString*)finalString;
+- (void)resignFirstResponderOnAll;
+- (BOOL)codeIsValid;
 @end
 
 @interface APCAddReferralCodeViewController ()
@@ -30,21 +33,15 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self setupAppearance];
-}
 
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    [self.textField becomeFirstResponder];
-}
-
-- (void)setupAppearance {
-    
-    [super setupAppearance];
-    
     UIBarButtonItem  *backster = [APCCustomBackButton customBackBarButtonItemWithTarget:self action:@selector(goBack) tintColor:[UIColor appPrimaryColor]];
     [self.navigationItem setLeftBarButtonItem:backster];
 }
+//
+//- (void)viewWillAppear:(BOOL)animated {
+//    [super viewWillAppear:animated];
+////    [self.textField becomeFirstResponder];
+//}
 
 #pragma mark - Overrides
 
@@ -68,14 +65,8 @@
     return [[APCAppDelegate sharedAppDelegate] dataSubstrate].currentUser;
 }
 
-- (void)textFieldTextDidChangeTo:(NSString*)text {
-    
-    [super textFieldTextDidChangeTo:text];
-    
-    // if we have no text, then disable our save button
-    if (text.length == 0) {
-        self.saveButton.enabled = NO;
-    }
+- (void)updateControls {
+    self.saveButton.enabled = [self codeIsValid];
 }
 
 #pragma mark - Actions
@@ -84,13 +75,13 @@
     
     self.saveButton.enabled = NO;
     
-    [self.textField resignFirstResponder];
+    [self resignFirstResponderOnAll];
     
     APCSpinnerViewController *spinnerController = [[APCSpinnerViewController alloc] init];
     [self presentViewController:spinnerController animated:YES completion:nil];
     
     typeof(self) __weak weakSelf = self;
-    [SBBComponent(SBBParticipantManager) setExternalIdentifier:self.textField.text completion:^(id  _Nullable responseObject __unused, NSError * _Nullable error) {
+    [SBBComponent(SBBParticipantManager) setExternalIdentifier:[self finalString] completion:^(id  _Nullable responseObject __unused, NSError * _Nullable error) {
         
         
         // get back to main thread
@@ -142,7 +133,7 @@
             else
             {
                 // save our new referral code to current user
-                [self currentUser].externalId = weakSelf.textField.text;
+                [self currentUser].externalId = [weakSelf finalString];
                 
                 [spinnerController showCheckmarkThenDismissCompletion:^{
                     [weakSelf goBack];
@@ -153,7 +144,7 @@
 }
 
 - (void)goBack {
-    [self.textField resignFirstResponder];
+    [self resignFirstResponderOnAll];
     [self.navigationController popToRootViewControllerAnimated:YES];
 }
 

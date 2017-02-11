@@ -21,15 +21,30 @@
 
 @end
 
+static const CGFloat kTextFieldWidthPerChar = 11.0;
+static const CGFloat kTextFieldExteriorSidePadding = 3.0;
+static const NSString *kTextFieldRegexStringKey = @"regexString";
+static const NSString *kTextFieldMaxCharCountKey = @"maxCharCountNumber";
+static const NSString *kTextFieldDelimiterString = @"-";
+
 @implementation APCReferralCodeViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    [self setupTextField];
-    [self setupAppearance];
+    [self setupTextFields];
     [self setupSaveButton];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    
+    [super viewDidAppear:animated];
+    [self becomeFirstResponderOnAppropriateField];
+
+//    dispatch_async(dispatch_get_main_queue(), ^{
+//        [self becomeFirstResponderOnAppropriateField];
+//    });
 }
 
 - (void)didReceiveMemoryWarning {
@@ -55,20 +70,113 @@
 
 #pragma mark - Setup
 
-- (void)setupAppearance {
-    [self.textField setTextColor:[UIColor appSecondaryColor1]];
-    [self.textField setFont:[UIFont appRegularFontWithSize:16.0f]];
+- (void)setupTextFields {
+    
+    NSString *existingCode = [self currentUser].externalId;
+    NSArray *existingCodeFields = [existingCode componentsSeparatedByString:[kTextFieldDelimiterString copy]];
+    
+    UIView *previousView = nil;
+    NSArray *textFieldDicts = [self textFieldDefinitions];
+    NSMutableArray *textFields = [[NSMutableArray alloc] initWithCapacity:textFieldDicts.count];
+    for (NSUInteger i=0; i<textFieldDicts.count; i++) {
+        NSDictionary *dict = textFieldDicts[i];
+        NSString *regexString = dict[kTextFieldRegexStringKey];
+        NSUInteger charCount = [dict[kTextFieldMaxCharCountKey] integerValue];
+        
+        APCReferralCodeTextField *textField = [[APCReferralCodeTextField alloc] initWithFrame:CGRectZero];
+        textField.regexString = regexString;
+        textField.numChars = charCount;
+        textField.isActive = NO;
+        textField.referallCodeTextFieldDelegate = self;
+        
+        textField.textColor = [UIColor appSecondaryColor1];
+        textField.font = [UIFont appRegularFontWithSize:16.0];
+        
+        textField.keyboardType = UIKeyboardTypeNumberPad;
+        textField.delegate = self;
+        textField.translatesAutoresizingMaskIntoConstraints = NO;
+        
+        if (existingCodeFields && existingCodeFields.count > i) {
+            NSString *fieldStr = existingCodeFields[i];
+            if (fieldStr && [textField isValidWithString:fieldStr]) {
+                textField.text = existingCodeFields[i];
+            }
+        }
+        
+        [textFields addObject:textField];
+                
+        CGFloat width = textField.numChars * kTextFieldWidthPerChar;
+        width += i == textFieldDicts.count - 1 ? kTextFieldWidthPerChar : 0;
+        
+        [self lockView:textField toPreviousView:previousView withWidth:width];
+        
+        previousView = (UIView*)textField;
+        if (dict != [textFieldDicts lastObject]) {
+            UILabel *delimiterLabel = [self newDelimiterLabel];
+            [self lockView:delimiterLabel toPreviousView:previousView withWidth:delimiterLabel.frame.size.width];
+            previousView = (UIView*)delimiterLabel;
+        }
+    }
+    
+    self.textFields = [NSArray arrayWithArray:textFields];
 }
 
-- (void)setupTextField {
-    
-    self.textField.validationDelegate = self;
-    
-    //Set Default Values
-    self.textField.text = [self currentUser].externalId;
-    [self textFieldTextDidChangeTo:self.textField.text];
+- (UILabel*)newDelimiterLabel {
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
+    label.text = [kTextFieldDelimiterString copy];
+    label.textColor = [UIColor lightGrayColor];
+    label.translatesAutoresizingMaskIntoConstraints = NO;
+    [label sizeToFit];
+    return label;
 }
 
+- (void)lockView:(UIView* __nonnull)view toPreviousView:(UIView* __nullable)prevView withWidth:(CGFloat)width {
+    
+    [self.textFieldContainView addSubview:view];
+    
+    NSLayoutAttribute leftAttr = prevView ? NSLayoutAttributeTrailing : NSLayoutAttributeLeading;
+    UIView *leftAlignView = prevView ? prevView : self.textFieldContainView;
+    
+    [self.textFieldContainView addConstraint:[NSLayoutConstraint constraintWithItem:view
+                                                                          attribute:NSLayoutAttributeLeading
+                                                                          relatedBy:NSLayoutRelationEqual
+                                                                             toItem:leftAlignView
+                                                                          attribute:leftAttr
+                                                                         multiplier:1.0
+                                                                           constant:kTextFieldExteriorSidePadding]];
+    
+    [self.textFieldContainView addConstraint:[NSLayoutConstraint constraintWithItem:view
+                                                                          attribute:NSLayoutAttributeTop
+                                                                          relatedBy:NSLayoutRelationEqual
+                                                                             toItem:self.textFieldContainView
+                                                                          attribute:NSLayoutAttributeTop
+                                                                         multiplier:1.0
+                                                                           constant:0.0]];
+
+    [self.textFieldContainView addConstraint:[NSLayoutConstraint constraintWithItem:view
+                                                                          attribute:NSLayoutAttributeBottom
+                                                                          relatedBy:NSLayoutRelationEqual
+                                                                             toItem:self.textFieldContainView
+                                                                          attribute:NSLayoutAttributeBottom
+                                                                         multiplier:1.0
+                                                                           constant:0.0]];
+
+    [view addConstraint:[NSLayoutConstraint constraintWithItem:view
+                                                          attribute:NSLayoutAttributeWidth
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:nil
+                                                          attribute:NSLayoutAttributeNotAnAttribute
+                                                         multiplier:1.0
+                                                           constant:width]];
+}
+
+#pragma mark - TextField model
+
+- (NSArray*)textFieldDefinitions {
+    return @[@{kTextFieldRegexStringKey:@"[0-9]{2}", kTextFieldMaxCharCountKey:[NSNumber numberWithInteger:2]},
+             @{kTextFieldRegexStringKey:@"[0-9]{3}", kTextFieldMaxCharCountKey:[NSNumber numberWithInteger:3]},
+             @{kTextFieldRegexStringKey:@"[0-9]{3}", kTextFieldMaxCharCountKey:[NSNumber numberWithInteger:3]}];
+}
 
 #pragma mark - Abstract classes
 
@@ -94,51 +202,48 @@
 
 #pragma mark - Form validation
 
-- (void)textFieldTextDidChangeTo:(NSString*)text
-{
-    //    [UIView animateWithDuration:0.3 animations:^{
-    //        self.alertLabel.alpha = 0;
-    //    }];
-    
-    BOOL valid = [self refCodeIsValid:text];
-    self.textField.valid = valid;
-    
-    // if the textfield is empty, we don't want to show the invalid icon, so
-    // optionally hide the text fields validate button
-    self.textField.validationButton.hidden = text.length == 0;
-    
-    // enable the next button if the textField has no text or is valid
-    self.saveButton.enabled = valid || text.length == 0;
+- (NSString*)finalString {
+    return [self concatStringWithDelimiter:YES];
 }
 
-- (BOOL)refCodeIsValid:(NSString*)refCode
-{
-    BOOL fieldValid = NO;
-    
-    if (refCode > 0) {
-        fieldValid = [refCode isValidForRegex:kAPCUserInfoFieldReferralCodeRegEx];
-        
-        //        if (errorMessage && !fieldValid) {
-        //            errorMessage = NSLocalizedStringWithDefaultValue(@"Please enter a valid referral code.", @"APCAppCore", APCBundle(), @"Please enter a valid referral code.", @"");
-        //        }
-    } else {
-        //        if (errorMessage && !fieldValid) {
-        //            errorMessage = NSLocalizedStringWithDefaultValue(@"Referral code cannot be left empty.", @"APCAppCore", APCBundle(), @"Referral code cannot be left empty.", @"");
-        //        }
+- (NSString*)concatStringWithDelimiter:(BOOL)withDelimiter {
+    NSMutableString *mString = [[NSMutableString alloc] initWithString:@""];
+    for (APCReferralCodeTextField *textField in self.textFields) {
+        if (textField.pendingText) {
+            [mString appendString:textField.pendingText];
+        }
+        else {
+            [mString appendString:textField.text];
+        }
+        if (withDelimiter && textField != [self.textFields lastObject]) {
+            [mString appendString:[kTextFieldDelimiterString copy]];
+        }
     }
-    
-    
-    return fieldValid;
+    return [NSString stringWithString:mString];
+}
+
+- (BOOL)codeIsValid {
+    BOOL valid = YES;
+    for (APCReferralCodeTextField *textField in self.textFields) {
+        valid = textField.isValid;
+        if (!valid) {
+            break;
+        }
+    }
+    return valid;
+}
+
+- (void)updateControls {
+    self.saveButton.enabled = [self codeIsValid] || [self concatStringWithDelimiter:NO].length == 0;
 }
 
 #pragma mark - Actions
 
 - (IBAction)saveHit:(id __unused)sender {
     
-    [self.textField resignFirstResponder];
+    [self resignFirstResponderOnAll];
     APCUser *currentUser = [self currentUser];
-    currentUser.externalId = self.textField.text;
-    
+    currentUser.externalId = [self finalString];
     
     [self goForward];
 }
@@ -155,22 +260,97 @@
     }
 }
 
+- (void)goToTextFieldBeforeTextField:(APCReferralCodeTextField*)textField deleteChar:(BOOL)deleteChar {
+    NSUInteger idx = [self.textFields indexOfObject:textField];
+    if (idx > 0) {
+        textField.isActive = NO;
+        APCReferralCodeTextField *newTextField = self.textFields[idx - 1];
+        newTextField.isActive = YES;
+        if (deleteChar && newTextField.text.length > 0) {
+            newTextField.text = [newTextField.text substringToIndex:newTextField.text.length - 1];
+        }
+        [newTextField becomeFirstResponder];
+    }
+}
+
+- (void)goToTextFieldAfterTextField:(APCReferralCodeTextField*)textField {
+    NSUInteger idx = [self.textFields indexOfObject:textField];
+    if (idx + 1 < self.textFields.count) {
+        textField.isActive = NO;
+        APCReferralCodeTextField *newTextField = self.textFields[idx + 1];
+        newTextField.isActive = YES;
+        [newTextField becomeFirstResponder];
+    }
+}
+
+- (void)resignFirstResponderOnAll {
+    for (UITextField *textField in self.textFields) {
+        if (textField.isFirstResponder) {
+            [textField resignFirstResponder];
+        }
+    }
+}
+
+- (void)becomeFirstResponderOnAppropriateField {
+    if (self.textFields.count > 0) {
+        for (APCReferralCodeTextField *textField in self.textFields) {
+            if (textField.text.length == 0 || textField == [self.textFields lastObject]) {
+                textField.isActive = YES;
+                
+                if ([textField canBecomeFirstResponder]) {
+                    [textField becomeFirstResponder];
+                }
+                else {
+                    NSLog(@"got it");
+                }
+                
+                break;
+            }
+        }
+    }
+}
 
 #pragma mark - UITextField delegate
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
     
     NSString *text = [textField.text stringByReplacingCharactersInRange:range withString:string];
-    [self textFieldTextDidChangeTo:text];
+    APCReferralCodeTextField *referralTextField = (APCReferralCodeTextField*)textField;
+
+    if (string.length > 0 && textField == [self.textFields lastObject] && referralTextField.numChars == textField.text.length) {
+        return NO;
+    }
     
+    referralTextField.pendingText = text;
+    
+    [self updateControls];
+    
+    if (referralTextField.numChars == referralTextField.pendingText.length) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self goToTextFieldAfterTextField:referralTextField];
+        });
+    }
+
+    referralTextField.isEmpty = textField.text.length == 0;
+
     return YES;
 }
 
-#pragma mark - APCFormTextField delegate
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+    APCReferralCodeTextField *referralTextField = (APCReferralCodeTextField*)textField;
+    return referralTextField.isActive;
+}
 
-- (void)formTextFieldDidTapValidButton:(APCFormTextField *)textField
-{
-    [self textFieldTextDidChangeTo:textField.text];
+#pragma mark APCReferralTextField delegate
+
+- (void)APCReferralCodeTextFieldDidBackspace:(APCReferralCodeTextField *)textField {
+    
+    // if our text was empty before backspace was hit, go to previous field
+    if (textField.isEmpty) {
+        [self goToTextFieldBeforeTextField:textField deleteChar:YES];
+    }
+    
+    textField.isEmpty = textField.text.length == 0;
 }
 
 @end

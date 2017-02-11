@@ -7,18 +7,19 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "APCFormTextField.h"
 #import "APCUser.h"
+#import "APCReferralCodeTextField.h"
 
-@interface APCReferralCodeViewController : UIViewController <UITextFieldDelegate, APCFormTextFieldDelegate>
+@interface APCReferralCodeViewController : UIViewController <UITextFieldDelegate, APCReferralCodeTextFieldDelegate>
 
-@property (weak, nonatomic) IBOutlet APCFormTextField *textField;
 @property (assign, nonatomic) UIBarButtonItem *saveButton;
+@property (strong, nonatomic) NSArray *textFields;
+@property (weak, nonatomic) IBOutlet UIView *textFieldContainView;
 
 // abstract methods
 - (void)setupSaveButton;
 - (IBAction)saveHit:(id)sender;
 - (APCUser *)currentUser;
-- (void)textFieldTextDidChangeTo:(NSString*)text;
+- (void)updateControls;
 
 @end

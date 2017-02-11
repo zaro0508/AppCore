@@ -11,6 +11,8 @@
 		031C95FD1E491B1D00DD34FE /* APCReferralCodeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 031C95FB1E491B1D00DD34FE /* APCReferralCodeViewController.m */; };
 		031C96001E491B3F00DD34FE /* APCAddReferralCodeViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 031C95FE1E491B3F00DD34FE /* APCAddReferralCodeViewController.h */; };
 		031C96011E491B3F00DD34FE /* APCAddReferralCodeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 031C95FF1E491B3F00DD34FE /* APCAddReferralCodeViewController.m */; };
+		03B697E51E4E5D10001AE2CA /* APCReferralCodeTextField.h in Headers */ = {isa = PBXBuildFile; fileRef = 03B697E31E4E5D10001AE2CA /* APCReferralCodeTextField.h */; };
+		03B697E61E4E5D10001AE2CA /* APCReferralCodeTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 03B697E41E4E5D10001AE2CA /* APCReferralCodeTextField.m */; };
 		049439811B8FC04000CAE23C /* APCDownloadDataViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 0494397F1B8FC04000CAE23C /* APCDownloadDataViewController.h */; };
 		049439821B8FC04000CAE23C /* APCDownloadDataViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 049439801B8FC04000CAE23C /* APCDownloadDataViewController.m */; };
 		04FB64471BB4883900D0A50D /* APCTaskImporter.h in Headers */ = {isa = PBXBuildFile; fileRef = 04FB64451BB4883900D0A50D /* APCTaskImporter.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -752,6 +754,8 @@
 		031C95FB1E491B1D00DD34FE /* APCReferralCodeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APCReferralCodeViewController.m; sourceTree = "<group>"; };
 		031C95FE1E491B3F00DD34FE /* APCAddReferralCodeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APCAddReferralCodeViewController.h; sourceTree = "<group>"; };
 		031C95FF1E491B3F00DD34FE /* APCAddReferralCodeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APCAddReferralCodeViewController.m; sourceTree = "<group>"; };
+		03B697E31E4E5D10001AE2CA /* APCReferralCodeTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APCReferralCodeTextField.h; sourceTree = "<group>"; };
+		03B697E41E4E5D10001AE2CA /* APCReferralCodeTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APCReferralCodeTextField.m; sourceTree = "<group>"; };
 		045D0CBD1BBAFDC500330C7E /* APCModel 8.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "APCModel 8.xcdatamodel"; sourceTree = "<group>"; };
 		0494397F1B8FC04000CAE23C /* APCDownloadDataViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APCDownloadDataViewController.h; sourceTree = "<group>"; };
 		049439801B8FC04000CAE23C /* APCDownloadDataViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = APCDownloadDataViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
@@ -2781,6 +2785,8 @@
 				F5F1294F1A2F78490015982C /* APCStudyOverviewViewController.m */,
 				031C95FA1E491B1D00DD34FE /* APCReferralCodeViewController.h */,
 				031C95FB1E491B1D00DD34FE /* APCReferralCodeViewController.m */,
+				03B697E31E4E5D10001AE2CA /* APCReferralCodeTextField.h */,
+				03B697E41E4E5D10001AE2CA /* APCReferralCodeTextField.m */,
 				F5F129501A2F78490015982C /* APCUserInfoConstants.h */,
 				F5F129511A2F78490015982C /* EmailVerification */,
 				F5F1295D1A2F78490015982C /* SignIn */,
@@ -3303,6 +3309,7 @@
 				F5B947E71A73272C0034C522 /* APCSegmentedButton.h in Headers */,
 				F5B947C71A73272C0034C522 /* NSObject+Helper.h in Headers */,
 				747307101A96E1DE0071D863 /* APCCMS.h in Headers */,
+				03B697E51E4E5D10001AE2CA /* APCReferralCodeTextField.h in Headers */,
 				7423AB5B1AA3FFD8004A325A /* APCConsentRedirector.h in Headers */,
 				081A477A1A93EC4700E13148 /* APCBadgeLabel.h in Headers */,
 				F5F12A891A2F78490015982C /* APCTableViewItem.h in Headers */,
@@ -3735,6 +3742,7 @@
 				F5F12AF71A2F78490015982C /* APCStepViewController.m in Sources */,
 				CFFDEDDB1A95734000B25581 /* APCFrequencyDayTableViewCell.m in Sources */,
 				F5F12AFE1A2F78490015982C /* APCIntroductionViewController.m in Sources */,
+				03B697E61E4E5D10001AE2CA /* APCReferralCodeTextField.m in Sources */,
 				F5F12ADD1A2F78490015982C /* APCSegmentedTableViewCell.m in Sources */,
 				F50738C11A682E12004CF100 /* APCDateRange.m in Sources */,
 				5B7D471D1B0549FA00958921 /* APCCubicCurveAlgorithm.m in Sources */,
