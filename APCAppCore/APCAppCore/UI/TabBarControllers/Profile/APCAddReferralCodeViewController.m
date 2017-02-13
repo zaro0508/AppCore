@@ -8,15 +8,10 @@
 
 #import "APCAddReferralCodeViewController.h"
 #import "APCLocalization.h"
-#import "APCSpinnerViewController.h"
-#import "APCLog.h"
 #import "APCCustomBackButton.h"
 #import "APCAppDelegate.h"
 
-#import "NSError+Bridge.h"
 #import "UIColor+APCAppearance.h"
-
-#import <BridgeSDK/BridgeSDK.h>
 
 @interface APCReferralCodeViewController ()
 - (void)setupAppearance;
@@ -69,79 +64,13 @@
     self.saveButton.enabled = [self codeIsValid];
 }
 
-#pragma mark - Actions
-
-- (IBAction)saveHit:(id __unused)sender {
-    
-    self.saveButton.enabled = NO;
-    
-    [self resignFirstResponderOnAll];
-    
-    APCSpinnerViewController *spinnerController = [[APCSpinnerViewController alloc] init];
-    [self presentViewController:spinnerController animated:YES completion:nil];
-    
-    typeof(self) __weak weakSelf = self;
-    [SBBComponent(SBBParticipantManager) setExternalIdentifier:[self finalString] completion:^(id  _Nullable responseObject __unused, NSError * _Nullable error) {
-        
-        
-        // get back to main thread
-        dispatch_async(dispatch_get_main_queue(), ^{
-            
-            if (error) {
-                
-                self.saveButton.enabled = YES;
-
-                APCLogError2 (error);
-                
-                if (error.code == SBBErrorCodeInternetNotConnected || error.code == SBBErrorCodeServerNotReachable || error.code == SBBErrorCodeServerUnderMaintenance) {
-                    [spinnerController dismissViewControllerAnimated:NO completion:^{
-                        
-                        UIAlertController *alertView = [UIAlertController alertControllerWithTitle:NSLocalizedStringWithDefaultValue(@"Referral Code", @"APCAppCore", APCBundle(), @"Referral Code", @"")
-                                                                                           message:error.localizedDescription
-                                                                                    preferredStyle:UIAlertControllerStyleAlert];
-                        
-                        UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
-                                                                              handler:^(UIAlertAction * __unused action) {}];
-                        
-                        [alertView addAction:defaultAction];
-                        [self presentViewController:alertView animated:YES completion:nil];
-                    }];
-                } else {
-                    [spinnerController dismissViewControllerAnimated:NO completion:^{
-                        
-                        UIAlertController *alertView = [UIAlertController alertControllerWithTitle:NSLocalizedStringWithDefaultValue(@"Referral Code", @"APCAppCore", APCBundle(), @"Referral Code", @"")
-                                                                                           message:error.message
-                                                                                    preferredStyle:UIAlertControllerStyleAlert];
-                        
-                        UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"Cancel", @"APCAppCore", APCBundle(), @"Cancel", @"") style:UIAlertActionStyleCancel
-                                                                             handler:^(UIAlertAction * __unused action) {
-                                                                                 [self goBack];
-                                                                             }];
-                        
-                        UIAlertAction* retryAction = [UIAlertAction actionWithTitle:NSLocalizedStringWithDefaultValue(@"Try Again", @"APCAppCore", APCBundle(), @"Try Again", nil) style:UIAlertActionStyleDefault
-                                                                            handler:^(UIAlertAction * __unused action) {
-                                                                                [weakSelf saveHit:nil];
-                                                                            }];
-                        
-                        [alertView addAction:cancelAction];
-                        [alertView addAction:retryAction];
-                        [self presentViewController:alertView animated:YES completion:nil];
-                        
-                    }];
-                }
-            }
-            else
-            {
-                // save our new referral code to current user
-                [self currentUser].externalId = [weakSelf finalString];
-                
-                [spinnerController showCheckmarkThenDismissCompletion:^{
-                    [weakSelf goBack];
-                }];
-            }
-        });
+- (void)saveSucceededWithSpinnerController:(APCSpinnerViewController*)spinnerController {
+    [spinnerController showCheckmarkThenDismissCompletion:^{
+        [self goBack];
     }];
 }
+
+#pragma mark - Actions
 
 - (void)goBack {
     [self resignFirstResponderOnAll];

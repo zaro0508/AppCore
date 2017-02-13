@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "APCUser.h"
 #import "APCReferralCodeTextField.h"
+#import "APCSpinnerViewController.h"
 
 @interface APCReferralCodeViewController : UIViewController <UITextFieldDelegate, APCReferralCodeTextFieldDelegate>
 
@@ -21,5 +22,6 @@
 - (IBAction)saveHit:(id)sender;
 - (APCUser *)currentUser;
 - (void)updateControls;
+- (void)saveSucceededWithSpinnerController:(APCSpinnerViewController*)spinnerController;
 
 @end
