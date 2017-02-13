@@ -40,11 +40,20 @@ static const NSString *kTextFieldDelimiterString = @"-";
 - (void)viewDidAppear:(BOOL)animated {
     
     [super viewDidAppear:animated];
-    [self becomeFirstResponderOnAppropriateField];
 
-//    dispatch_async(dispatch_get_main_queue(), ^{
-//        [self becomeFirstResponderOnAppropriateField];
-//    });
+    /*
+     Need to call become first responder here. For some reason, the text field
+     will  not become and remain first resonder. If this is called on viewDidLoad,
+     the keyboard is visible for a split second but is then dismissed. If called
+     on viewDidAppear, it never shows up. I think this has to do with the fact
+     that this VC is a child VC of APCContainerStepViewController. The only way
+     to get the textField to become and remain firstResponder is to dispatch the call
+     to the main queue here
+     */
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self becomeFirstResponderOnAppropriateField];
+    });
 }
 
 - (void)didReceiveMemoryWarning {
@@ -71,6 +80,9 @@ static const NSString *kTextFieldDelimiterString = @"-";
 #pragma mark - Setup
 
 - (void)setupTextFields {
+    
+    // Iterate our model and create text fields and delimiter labels
+    // Also populate the text fields with current values, if any
     
     NSString *existingCode = [self currentUser].externalId;
     NSArray *existingCodeFields = [existingCode componentsSeparatedByString:[kTextFieldDelimiterString copy]];
@@ -108,6 +120,7 @@ static const NSString *kTextFieldDelimiterString = @"-";
         CGFloat width = textField.numChars * kTextFieldWidthPerChar;
         width += i == textFieldDicts.count - 1 ? kTextFieldWidthPerChar : 0;
         
+        // add constraints
         [self lockView:textField toPreviousView:previousView withWidth:width];
         
         previousView = (UIView*)textField;
@@ -173,6 +186,12 @@ static const NSString *kTextFieldDelimiterString = @"-";
 #pragma mark - TextField model
 
 - (NSArray*)textFieldDefinitions {
+    
+    // configure each text field with a regex string for validation and a
+    // max character count (used only with setting width on field
+    
+    // TODO: parse char count from regex string instead of setting it explicitly here
+    
     return @[@{kTextFieldRegexStringKey:@"[0-9]{2}", kTextFieldMaxCharCountKey:[NSNumber numberWithInteger:2]},
              @{kTextFieldRegexStringKey:@"[0-9]{3}", kTextFieldMaxCharCountKey:[NSNumber numberWithInteger:3]},
              @{kTextFieldRegexStringKey:@"[0-9]{3}", kTextFieldMaxCharCountKey:[NSNumber numberWithInteger:3]}];
@@ -223,6 +242,9 @@ static const NSString *kTextFieldDelimiterString = @"-";
 }
 
 - (BOOL)codeIsValid {
+    
+    // iterate our textFields and check valid state for each
+    
     BOOL valid = YES;
     for (APCReferralCodeTextField *textField in self.textFields) {
         valid = textField.isValid;
@@ -240,6 +262,8 @@ static const NSString *kTextFieldDelimiterString = @"-";
 #pragma mark - Actions
 
 - (IBAction)saveHit:(id __unused)sender {
+    
+    // save referral code to user and continue
     
     [self resignFirstResponderOnAll];
     APCUser *currentUser = [self currentUser];
@@ -292,6 +316,10 @@ static const NSString *kTextFieldDelimiterString = @"-";
 }
 
 - (void)becomeFirstResponderOnAppropriateField {
+    
+    // tell the first empty text field to becomeFirstReponder. If none are empty,
+    // then tell the last field to becomeFirstResponder
+    
     if (self.textFields.count > 0) {
         for (APCReferralCodeTextField *textField in self.textFields) {
             if (textField.text.length == 0 || textField == [self.textFields lastObject]) {
@@ -314,6 +342,8 @@ static const NSString *kTextFieldDelimiterString = @"-";
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
     
+    
+    
     NSString *text = [textField.text stringByReplacingCharactersInRange:range withString:string];
     APCReferralCodeTextField *referralTextField = (APCReferralCodeTextField*)textField;
 
@@ -326,11 +356,20 @@ static const NSString *kTextFieldDelimiterString = @"-";
     [self updateControls];
     
     if (referralTextField.numChars == referralTextField.pendingText.length) {
+        
+        // dispatch to main queue here so this current field is updated before
+        // the next field becomesFirstResponder
+        
         dispatch_async(dispatch_get_main_queue(), ^{
             [self goToTextFieldAfterTextField:referralTextField];
         });
     }
 
+    // set isEmpty property on text field so our didBackspace delegate method below
+    // will know that text field is empty and can go to previous text field. This
+    // is necessary because the didBackspace method is called before the textField.text
+    // us updated, so it won't appear empty at that time
+    
     referralTextField.isEmpty = textField.text.length == 0;
 
     return YES;
