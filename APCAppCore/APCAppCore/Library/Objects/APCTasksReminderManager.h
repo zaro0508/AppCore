@@ -45,6 +45,12 @@ static NSUInteger const kAPCTaskReminderDayOfWeekThursday    = 5;
 static NSUInteger const kAPCTaskReminderDayOfWeekFriday      = 6;
 static NSUInteger const kAPCTaskReminderDayOfWeekSaturday    = 7;
 
+extern NSString * const kTaskReminderUserInfo;
+extern NSString * const kTaskReminderUserInfoKey;
+
+extern NSString * gTaskReminderMessage;
+extern NSString * gTaskReminderDelayMessage;
+
 @interface APCTasksReminderManager : NSObject
 @property (nonatomic) BOOL reminderOn;
 @property (nonatomic, strong) NSString * reminderTime; //Should be an element of reminderTimesArray
