@@ -64,7 +64,8 @@ typedef NS_ENUM(APCTableViewItemType, APCUserInfoItemType) {
     kAPCSettingsItemTypePrivacyPolicy,
     kAPCSettingsItemTypeLicenseInformation,
     kAPCSettingsItemTypeSharingOptions,
-    kAPCSettingsItemTypeDownloadData
+    kAPCSettingsItemTypeDownloadData,
+    kAPCSettingsItemTypeReferralCode
 };
 
 
@@ -102,6 +103,7 @@ static NSString * const kAPCMedicalInfoItemWeightRegEx          = @"[0-9]{1,4}";
 
 static NSString * const kAPCMedicalInfoItemSleepTimeFormat     = @"hh:mm a";
 
+static NSString * const kAPCUserInfoFieldReferralCodeRegEx     = @"[A-Za-z]{3}+_[A-Za-z]{4}";
 
 static NSString * const kAPCAppStateKey = @"APCAppState";
 

@@ -56,6 +56,8 @@
 + (UIColor *) appBorderLineColor;
 + (UIColor *) appPrimaryNavBarColor;
 
++ (UIColor *)checkmarkGreenColor;
+
 + (UIColor *)tertiaryColorForString:(NSString *)colorName;
 
 + (UIColor *)colorForTaskId:(NSString *)taskId;

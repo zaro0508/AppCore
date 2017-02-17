@@ -35,6 +35,7 @@
 
 @interface UIImage (APCHelper)
 + (UIImage *)imageWithColor:(UIColor *)color;
++ (UIImage *)colorImage:(UIImage *)source withColor:(UIColor *)color;
 
 - (UIImage *)flippedImage:(UIImageOrientation)orientation;
 

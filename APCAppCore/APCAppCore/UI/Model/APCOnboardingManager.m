@@ -197,6 +197,10 @@ NSString * const kAPCOnboardingStoryboardName = @"APCOnboarding";
     if ([type isEqualToString:kAPCSignUpShareAppStepIdentifier]) {
         return [[APCScene alloc] initWithName:@"APCShareViewController" inStoryboard:kAPCOnboardingStoryboardName];
     }
+
+    if ([type isEqualToString:kAPCReferralCodeStepIdentifier]) {
+        return [[APCScene alloc] initWithName:@"APCReferralCodeViewController" inStoryboard:kAPCOnboardingStoryboardName];
+    }
     
     // Sign In
     if ([type isEqualToString:kAPCSignInStepIdentifier]) {

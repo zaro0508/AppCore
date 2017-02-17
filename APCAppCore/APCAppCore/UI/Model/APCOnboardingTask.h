@@ -54,6 +54,7 @@ FOUNDATION_EXPORT NSString *const kAPCSignUpThankYouStepIdentifier;
 FOUNDATION_EXPORT NSString *const kAPCSignInStepIdentifier;
 FOUNDATION_EXPORT NSString *const kAPCSignUpPermissionsPrimingStepIdentifier;
 FOUNDATION_EXPORT NSString *const kAPCSignUpShareAppStepIdentifier;
+FOUNDATION_EXPORT NSString *const kAPCReferralCodeStepIdentifier;
 
 @protocol APCOnboardingTaskDelegate;
 
@@ -89,6 +90,8 @@ FOUNDATION_EXPORT NSString *const kAPCSignUpShareAppStepIdentifier;
 @property (nonatomic, strong) ORKStep *medicalInfoStep;
 
 @property (nonatomic, strong) ORKStep *customInfoStep;
+
+@property (nonatomic, strong) ORKStep *referralCodeStep;
 
 @property (nonatomic, strong) ORKStep *passcodeStep;
 

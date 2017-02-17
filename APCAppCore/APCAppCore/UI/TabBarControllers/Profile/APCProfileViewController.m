@@ -43,6 +43,7 @@
 #import "APCWebViewController.h"
 #import "APCSettingsViewController.h"
 #import "APCSpinnerViewController.h"
+#import "APCAddReferralCodeViewController.h"
 #import "APCTableViewItem.h"
 #import "APCAppDelegate.h"
 #import "APCTasksReminderManager.h"
@@ -852,6 +853,21 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
             [rowItems addObject:row];
         }
         
+        {
+            APCTableViewItem *field = [APCTableViewItem new];
+            field.caption = NSLocalizedStringWithDefaultValue(@"Enter Referral Code", @"APCAppCore", APCBundle(), @"Enter Referral Code", @"");
+            field.reuseIdentifier = kAPCDefaultTableViewCellIdentifier;
+            field.textAlignnment = NSTextAlignmentRight;
+            field.editable = NO;
+            field.showChevron = YES;
+            field.selectionStyle = UITableViewCellSelectionStyleGray;
+            
+            APCTableViewRow *row = [APCTableViewRow new];
+            row.item = field;
+            row.itemType = kAPCSettingsItemTypeReferralCode;
+            [rowItems addObject:row];
+        }
+
         APCTableViewSection *section = [APCTableViewSection new];
         section.rows = [NSArray arrayWithArray:rowItems];
         section.sectionTitle = @"";
@@ -1081,6 +1097,16 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
             }
                 break;
             
+            case kAPCSettingsItemTypeReferralCode:
+            {
+                if (!self.isEditing){
+                    [self showReferralCode];
+                }
+                [tableView deselectRowAtIndexPath:indexPath animated:YES];
+                
+            }
+                break;
+
             case kAPCSettingsItemTypeReminderOnOff:
             {
                 if (!self.isEditing){
@@ -1420,6 +1446,9 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
                 case kAPCUserInfoItemTypeReviewConsent:
                     break;
                 
+                case kAPCSettingsItemTypeReferralCode:
+                    break;
+                    
                 case kAPCSettingsItemTypePrivacyPolicy:
                     break;
                 
@@ -1762,6 +1791,14 @@ static NSString * const kAPCRightDetailTableViewCellIdentifier = @"APCRightDetai
     }];
 }
 
+#pragma mark - Referral Code
+
+- (void)showReferralCode
+{
+    APCAddReferralCodeViewController *viewController = [[UIStoryboard storyboardWithName:@"APCProfile" bundle:[NSBundle appleCoreBundle]] instantiateViewControllerWithIdentifier:@"APCAddReferralCodeViewController"];
+    
+    [self.navigationController pushViewController:viewController animated:YES];
+}
 
 
 #pragma mark - Review Consent helper methods
