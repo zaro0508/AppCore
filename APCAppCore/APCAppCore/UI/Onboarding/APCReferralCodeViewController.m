@@ -90,10 +90,6 @@ static const NSUInteger kErrorCodeReferralCodeAlreadyUsed = 409;
 - (void)setupTextFields {
     
     // Iterate our model and create text fields and delimiter labels
-    // Also populate the text fields with current values, if any
-    
-    NSString *existingCode = [self currentUser].externalId;
-    NSArray *existingCodeFields = [existingCode componentsSeparatedByString:[kTextFieldDelimiterString copy]];
     
     UIView *previousView = nil;
     NSArray *textFieldDicts = [self textFieldDefinitions];
@@ -115,13 +111,6 @@ static const NSUInteger kErrorCodeReferralCodeAlreadyUsed = 409;
         textField.keyboardType = UIKeyboardTypeNumberPad;
         textField.delegate = self;
         textField.translatesAutoresizingMaskIntoConstraints = NO;
-        
-        if (existingCodeFields && existingCodeFields.count > i) {
-            NSString *fieldStr = existingCodeFields[i];
-            if (fieldStr && [textField isValidWithString:fieldStr]) {
-                textField.text = existingCodeFields[i];
-            }
-        }
         
         [textFields addObject:textField];
                 
